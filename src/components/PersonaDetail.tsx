@@ -25,11 +25,11 @@ interface PersonaDetailProps {
 }
 
 export default function PersonaDetail({ personas }: PersonaDetailProps) {
-  // Local state to track which persona's details are expanded
+  // Local state to track which persona's details are expanded (default to true/open as requested)
   const [expanded, setExpanded] = useState<Record<string, boolean>>({
-    anxious: false,
-    distracted: false,
-    firstTime: false
+    anxious: true,
+    distracted: true,
+    firstTime: true
   });
 
   const toggleExpand = (key: string) => {
@@ -162,10 +162,6 @@ export default function PersonaDetail({ personas }: PersonaDetailProps) {
 
                 {/* Basic Scannable metrics list */}
                 <div className="pt-2 space-y-2 border-t border-zinc-150/60">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-zinc-400 font-medium font-sans">Cognitive Load:</span>
-                    <span className="font-mono text-zinc-800 font-extrabold uppercase">{report.cognitiveLoad}</span>
-                  </div>
                   <div className="space-y-1">
                     <span className="text-zinc-400 font-medium text-xs font-sans">Primary Churn Risk:</span>
                     <p className="text-xs text-zinc-700 font-sans font-medium leading-relaxed">

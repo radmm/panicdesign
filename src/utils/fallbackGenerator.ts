@@ -1,55 +1,50 @@
 import { StressTestReport, ActionableFix } from "../types";
 
 /**
- * Generates a professional simulated UX Cognitive Load and Stress audit report based on a URL or screenshot name.
+ * Generates an extremely detailed and professional simulated UX Cognitive Load and Stress audit report 
+ * using precise developer keywords and clear layout diagnostics.
  */
 export function generateFallbackReport(url: string | undefined, originalFileName: string | undefined): StressTestReport {
   const targetName = url 
     ? url.replace(/^https?:\/\/(www\.)?/, "").split("/")[0]
     : originalFileName 
     ? originalFileName.replace(/\.[^/.]+$/, "") 
-    : "Interactive Workspace";
+    : "interface";
 
-  // Professional UX-derived design titles
-  const titles = [
-    `${targetName} Cognitive Load Index`,
-    `${targetName} Interface Conversion Pathway`,
-    `${targetName} Usability & Accessibility Review`,
-    `${targetName} Workspace Interaction Analysis`,
-  ];
-  const selectedTitle = titles[Math.floor(Math.random() * titles.length)];
+  // Clean title
+  const selectedTitle = `${targetName}.design — Interface Stress Report`;
 
   // Numerical scale representing interaction cognitive load (stress metrics)
-  const globalScore = Math.floor(Math.random() * 15) + 65; // 65 to 80
+  const globalScore = Math.floor(Math.random() * 10) + 72; // 72 to 81 (high friction)
 
   const mockFixes: ActionableFix[] = [
     {
-      issue: "High density of primary action buttons",
-      recommendation: "Structure the buttons using clear secondary hierarchies. A user navigating is presented with multiple primary inputs simultaneously, raising decision fatigue.",
+      issue: "button.flex-row element density on primary layout wrapper",
+      recommendation: "Replace bundled action bars with standard dropdown menus or collapsible action sets. Group secondary actions behind a 'More Options' icon button button.icon-only to decrease cognitive complexity and focus visual hierarchy on the primary CTA.",
       difficulty: "Easy",
       impact: "Critical"
     },
     {
-      issue: "Compact skipping mechanics in walkthrough sequences",
-      recommendation: "Provide a prominent, accessible direct link to skip standard intro frames. This allows experienced users to quickly enter their main workspace without distraction.",
+      issue: "Missing focus-visible ring styles on clickable input.text-field elements",
+      recommendation: "Apply focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:outline-none class values. Ensure keyboard-only power users can visually trace Tab key focuses across separate form items without guessing status.",
       difficulty: "Easy",
-      impact: "Highly Beneficial"
-    },
-    {
-      issue: "Advanced backend system abbreviations in headings",
-      recommendation: "Translate technical code indicators like 'V3_INDEX_RUNNING' into general human-centered status text. This keeps non-technical team members orientated.",
-      difficulty: "Medium",
       impact: "Critical"
     },
     {
-      issue: "High-contrast action cells missing dynamic safety states",
-      recommendation: "Integrate non-disruptive, standard verification sheets when confirming destructive changes. This lowers user hesitation before clicking major action frames.",
+      issue: "Amorphous touch hitboxes on a.nav-item anchors",
+      recommendation: "Ensure and enforce a minimum of min-h-[44px] and min-w-[44px] touch targets across all mobile anchors. Increase padding on navigation anchors from px-2 py-1 to px-4 py-2.5 to comply with WCAG 2.1 touch dimension guides.",
       difficulty: "Medium",
       impact: "Highly Beneficial"
     },
     {
-      issue: "Minimal onboarding cues in empty dashboard states",
-      recommendation: "Enrich empty state folders with gentle guidance tooltips or responsive placeholder outlines rather than blank list tables.",
+      issue: "Cumulative Layout Shift (CLS) during asynchronous resource loads",
+      recommendation: "Assign explicit aspect-ratio attributes or fallback min-h blocks to image components and dynamic analytics widget containers. This prevents rapid layout shifting that forces visitors to make unintended button clicks.",
+      difficulty: "Medium",
+      impact: "Highly Beneficial"
+    },
+    {
+      issue: "Cryptic status abbreviations used as system-feed labels",
+      recommendation: "Translate technical system indicators like 'CODE_200_RUNNING' or 'SYS_STATE_ACTIVE' into natural human microcopy such as 'Ready' or 'System active.' Keep non-developer team members oriented.",
       difficulty: "Easy",
       impact: "Nice-to-Have"
     }
@@ -58,75 +53,79 @@ export function generateFallbackReport(url: string | undefined, originalFileName
   return {
     id: "rep-fallback-" + Date.now(),
     title: selectedTitle,
-    urlAnalyzed: url || "Workspace Image Scan",
+    urlAnalyzed: url || "Local Mockup Scan",
     timestamp: new Date().toISOString(),
     globalPanicScore: globalScore,
-    brutalSummary: `The interface demonstrates high-quality responsive spacing but exhibits opportunities regarding cognitive layout structure. Interactive elements are grouped tightly, creating potential friction during rapid operational tasks.`,
-    visualAestheticRating: `8/10: Balanced Professional Typography`,
-    aestheticCritique: `The visual tracking pathway is structured well, although the spacing around specific data lists can be expanded. Aligning major touch targets with uniform container lines and using subtle off-whites will reduce visual noise and improve reading speeds for mobile visitors.`,
+    brutalSummary: `The user interface demonstrates excellent visual tracking pathways but suffers from dense inline layout elements and lack of visible focus loops on input fields. This triggers interaction stalls, particularly during rapid multi-tasking sessions.`,
+    visualAestheticRating: `7.2/10: Compact Functional Grid Layout`,
+    aestheticCritique: `The visual tracking layout is robust, however, element margins within main content blocks are tightly constrained. Adding explicit Tailwind spacing classes (e.g. gap-6, py-4) and utilizing a consistent gray-900 typography scale will reduce cognitive visual noise, directly improving reading accuracy for desktop and mobile visitors.`,
     personas: {
       anxious: {
-        personaName: "Anxious Persona (Clarity-Seeding)",
+        personaName: "Anxious Explorer",
         score: globalScore + 8 > 100 ? 98 : globalScore + 8,
-        quote: url 
-          ? `I want to proceed, but I'm unsure if clicking this button automatically commits my draft. Are there any confirmation warnings before making this change?`
-          : `This action view does not explicitly state how to rollback changes. I need concrete reassurance that my spreadsheet data is safely saved.`,
+        quote: `I want to click submit, but there is no back button or status guarantee. What if the request triggers twice, or clears my entire form state upon a network stall? I need a clear step indicator or action safeguard!`,
         cognitiveLoad: "High",
-        biggestRisk: "Absence of persistent helper icons or inline safety guidelines triggers user hesitation.",
+        biggestRisk: "Absence of persistent client-side safeguard dialogs or loading spinner indicators (e.g., button:disabled states during async fetch) causes users to trigger dual submissions or cancel key onboarding flows.",
         frictionPoints: [
           {
-            element: "Action Cell Row Selection",
-            locationDescription: "Positioned within the central action container list.",
-            panicTrigger: "Renders in a high-intensity solid container without secondary backtracks or clear cancel buttons.",
+            element: "form > button#submit-action",
+            locationDescription: "Positioned at the right-hand corner of the main form footer.",
+            panicTrigger: "This high-intensity actionable button lacks loading-state styling, microcopy confirmation steps, or fallback rollback safeguards.",
             severity: "high"
           },
           {
-            element: "Undefined system parameter fields",
-            locationDescription: "Centered vertically within the input container block.",
-            panicTrigger: "Requests custom database codes with complex wording, making the user worry about format errors.",
+            element: "input[type='password'] input field",
+            locationDescription: "Centered inside the user credentials container.",
+            panicTrigger: "Does not include a standard 'show password' icon toggle or inline password-strength constraints help-text, inducing submission failure anxiety.",
             severity: "medium"
+          },
+          {
+            element: "div.alert-box-container error panels",
+            locationDescription: "Apmended dynamically to the top of form wrappers.",
+            panicTrigger: "Renders as high-contrast red alerts without a close icon or direct instructions on how to remedy the validation error.",
+            severity: "high"
           }
         ]
       },
       distracted: {
-        personaName: "Distracted Persona (Rapid-Traversal)",
-        score: Math.max(45, globalScore - 10),
-        quote: `I am multitasking actively at the moment. This compact note text below the chart is quite small, making it easy to miss because my focus keeps jumping back to the primary header.`,
+        personaName: "Distracted User",
+        score: Math.max(45, globalScore - 12),
+        quote: `My screen is crowded with popups and secondary sidebars. I completely missed the primary payment button because it gets covered by the sticky chatbot widget!`,
         cognitiveLoad: "Medium",
-        biggestRisk: "Fine-print descriptions can get lost beneath heavy visual header margins and color accents.",
+        biggestRisk: "Visual hierarchy overcrowding. Important CTAs get lost beneath high-contrast decorative tags, excessive uppercase text badges, and low-contrast description spans.",
         frictionPoints: [
           {
-            element: "Skip tutorial hypertext link",
-            locationDescription: "Bottom-right side of the presentation rows.",
-            panicTrigger: "Sized in a small font, requiring deliberate focus to notice during quick browsing sessions.",
+            element: "button.btn-secondary-dismiss link selection",
+            locationDescription: "Bottom-left margin inside form layout rows.",
+            panicTrigger: "Lacks custom focus-ring outline styles, making it invisible to quick keyboard traversal and eye scanners during system multi-tasking.",
             severity: "high"
           },
           {
-            element: "Secondary settings toggle row",
-            locationDescription: "Aligned left on the primary data dashboard table structure.",
-            panicTrigger: "Positioned close to decorative separators, leading the eye to skip past these toggles during fast tabbing.",
+            element: "aside#chat-assistance-overlay",
+            locationDescription: "Sticky overlay fixed in the lower right viewport quadrant.",
+            panicTrigger: "An unrequested animation loop and lack of absolute background container z-index logic shields primary actionable button labels underneath.",
             severity: "medium"
           }
         ]
       },
       firstTime: {
-        personaName: "First-Time Persona (Onboarding-Dependent)",
-        score: Math.max(55, globalScore - 5),
-        quote: `I am looking for the starting point on this dashboard. What are the key distinctions between these models, and how can I test my first file upload?`,
+        personaName: "First-Time Visitor",
+        score: Math.max(55, globalScore - 4),
+        quote: `What do these acronyms mean? I am greeted by an empty dashboard filled with words like 'Ingress Metric Gateway'. How do I start?`,
         cognitiveLoad: "High",
-        biggestRisk: "Specialized system jargon and abstract terminology without immediate guidance tips.",
+        biggestRisk: "Proprietary system jargon and empty-state lists lacking onboarding illustrations, dynamic tooltip states, or interactive walkthrough cues.",
         frictionPoints: [
           {
-            element: "Product Feature Acronym Header",
-            locationDescription: "Top-left header area of the interface.",
-            panicTrigger: "Utilizes proprietary acronyms, creating an onboarding hurdle for new visitors.",
+            element: "h2.main-hero-headline > span",
+            locationDescription: "The focal point greeting heading centered on the hero splash.",
+            panicTrigger: "Employs internal product slang and corporate shortcuts that alienate general visitors seeking direct features.",
             severity: "high"
           },
           {
-            element: "Unpopulated grid list display",
-            locationDescription: "Fills the lower workspace canvas area.",
-            panicTrigger: "Presents no distinct tooltip guides or initial call-to-actions to prompt the first upload.",
-            severity: "medium"
+            element: "div.empty-state-card list template",
+            locationDescription: "Spans the central dashboard core.",
+            panicTrigger: "Displays a simple '0 Reports Loaded' text line without helpful visual prompts or a direct, actionable button indicating 'Run Your First Scan'.",
+            severity: "high"
           }
         ]
       }

@@ -69,18 +69,20 @@ app.post("/api/stress-test", async (req, res) => {
 
     promptText += `
     
-You are a highly sophisticated, objective, and supportive Lead UX Auditor. You have high attention to detail for:
-1. Form optimization and cognitive complexity (minimizing unnecessary fields like corporate size or phone requirements).
-2. Cognitive hierarchy and information layout (ensuring information is structured cleanly with generous room, preventing overwhelming visual density).
-3. Clear and universal vocabulary (translating technical jargon and system acronyms into plain, accessible, user-friendly labels).
-4. Interactive safeguard loops (providing reassuring confirmation states for critical actions, clear steps, and helpful microcopy guidance).
+You are a highly sophisticated, objective, and supportive Lead Fullstack UX Auditor & UI Engineer. You have an extremely high attention to detail for:
+1. Form optimization and cognitive complexity (minimizing redundant form inputs, optimizing client-side validation states, explicit autofocus and tab-indexing, keyboard navigation accessibility).
+2. Cognitive hierarchy and information layout (preventing Cumulative Layout Shifts, optimizing card flexboxes, applying standard typography scales, maintaining high container spacing, structural margins).
+3. Technical vocabulary and intuitive copywriting (translating complex system error stack traces, unhelpful codes, and database acronyms into direct, standard human labels).
+4. Guardrails and rollback pipelines (preventing user mistakes, state preservation upon validation reload, micro-action backtracks).
 
-Evaluate this UI by analyzing how each of these three target user personas reacts to it:
-1. Anxious User: Seeks maximum reassurance and clarity. Wants to avoid input errors, data loss, or unintended subscription flows. Experiences friction with compact displays or missing fallback validation guidelines.
-2. Distracted User: Multi-tasking, high distraction level, fast attention switching. Misses small interactive controls. Requires elegant visual focus, prominent typography hierarchies, and unmistakable touch targets.
-3. First-Time User: Completely alien to your jargon. Doesn't know what the product is or how to start. Gets trapped with empty text states.
+Audit this UI from the perspectives of three simulated, distinct user personas. For each persona's report, you MUST provide highly detailed, realistic, and developer-centric diagnostic feedback.
 
-Return an audit report containing a "Global Panic Score" (reflecting overall interaction friction, 0-100) and structured feedback for each simulated persona. Keep the tone premium, detailed, objective, and supportive, with exceptional and constructive design recommendations.`;
+Formatting directives for the output data:
+- Persona "quotes" must run as specific, realistic user thought processes representing interactive confusion on specific page nodes seen (e.g., "Wait, does this 'POST_ACTION_DB' key dispatch a request immediately? How do I rollback? There is no focus-ring, so I can't keep track of keyboard tab positions!").
+- Do NOT provide vague, boilerplate, or placeholder feedback. Give highly specific, technical "straight-up answers" of EXACTLY what components, selectors, buttons, input bars, or containers need to be modified in the HTML/CSS/React codebase.
+- In 'frictionPoints', list actual simulated hotspots with exact 'element' IDs/tags (e.g., "div.flex-container > form > button#submit", "input[type='tel']", "header nav.sticky") and concrete 'panicTrigger' descriptions utilizing professional developer, designer, and web-performance keywords (e.g., "lack of focus-visible rings causing keyboard traps", "touch-targets failing the 44px minimum tap size criteria", "cumulative layout shift (CLS) hazards during async content fetch", "contrast ratio failing WCAG 2.1 levels under light grey backgrounds", "z-index stacking overlap covering dropdown popovers", "missing debounce timeouts on active autocomplete search bars", "insufficient whitespace padding leading to element overlapping").
+- The 'biggestRisk' must state a clear, definitive technical reason (e.g., "The absence of client-side localState preservation during image loading triggers rapid form clearing upon retry, leading to immediate database-churn and total walkthrough failure").
+- The general 'fixes' array must comprise actual, highly detailed, and pragmatic code-level suggestions (e.g., "Replace inline flex inline-block with flex-row flex-wrap md:flex-nowrap and apply a gap-4 separator", "Implement standard pointer-events-none classes on decorative icons to avoid event bubbling traps", "Integrate focus-trap-react inside modal overlays to capture Tab keyboard flows").`;
 
     contents.push({ text: promptText });
 

@@ -30,7 +30,8 @@ export default function App() {
   const [uploadedScreenshot, setUploadedScreenshot] = useState<string | null>(null);
   const [screenshotName, setScreenshotName] = useState<string | null>(null);
   const [mimeType, setMimeType] = useState<string | null>(null);
-  
+
+
   // Drag & drop feedback states
   const [isDragging, setIsDragging] = useState(false);
   
@@ -252,16 +253,13 @@ export default function App() {
       <header className="bg-transparent sticky top-0 z-50 relative">
         <div className="max-w-7xl mx-auto px-6 py-5 flex flex-row items-center justify-between gap-4 w-full">
           
-          <div className="flex items-center gap-1.5">
-            <div className="h-5 w-5 rounded bg-zinc-950 flex items-center justify-center flex-shrink-0 border border-zinc-850">
-              <Cpu className="h-2.5 w-2.5 text-white" />
+          <div className="flex items-center gap-2">
+            <div className="h-6 w-6 rounded bg-zinc-950 flex items-center justify-center flex-shrink-0 border border-zinc-850">
+              <Cpu className="h-3 w-3 text-white" />
             </div>
             <div className="flex flex-col">
-              <span className="font-sans font-black text-rose-600 tracking-tight text-[11px] leading-none">
+              <span className="font-sans font-black text-rose-600 tracking-tight text-[15px] leading-none">
                 panic.design
-              </span>
-              <span className="font-mono text-[7px] text-zinc-450 uppercase tracking-widest font-bold mt-0.5">
-                usability indexer
               </span>
             </div>
           </div>
@@ -401,15 +399,19 @@ export default function App() {
               )}
 
               {/* Professional Minimalist Header - Optimized size & spacing */}
-              <div className="text-center space-y-1.5 max-w-sm mx-auto">
-                <span className="text-zinc-400 font-mono text-[8px] tracking-[0.2em] font-extrabold uppercase">
+              <div className="text-center space-y-1.5 max-w-sm mx-auto flex flex-col items-center justify-center min-h-[110px]">
+                <span className="text-zinc-400 font-mono text-[8px] tracking-[0.12em] font-extrabold lowercase">
                   cognitive walkthrough rig
                 </span>
-                <h2 className="font-sans font-black text-2xl text-zinc-900 tracking-tight leading-snug">
-                  Optimize Interface Friction
-                </h2>
-                <p className="text-zinc-500 font-sans text-xs leading-relaxed">
-                  Simulate modern user sessions across distinct reading pathways to map visual focus instantly.
+                
+                <div className="h-10 flex items-center justify-center">
+                  <h2 className="font-sans font-black text-xl text-zinc-900 tracking-tight leading-snug lowercase text-center">
+                    ready to map your user sessions?
+                  </h2>
+                </div>
+
+                <p className="text-zinc-500 font-sans text-[11px] leading-relaxed lowercase">
+                  simulate modern user sessions across distinct reading pathways to map visual focus instantly.
                 </p>
               </div>
 
@@ -424,11 +426,11 @@ export default function App() {
                     className="space-y-4.5"
                   >
                     <div className="space-y-1 pb-1.5 border-b border-white/20">
-                      <h3 className="font-sans font-black text-sm text-zinc-900 tracking-tight">
-                        Target Interface Scanner
+                      <h3 className="font-sans font-semibold text-[11px] text-zinc-750 tracking-tight lowercase">
+                        target interface scanner
                       </h3>
-                      <p className="text-[10px] text-zinc-500 font-sans">
-                        Provide a mockup file or enter a website address below.
+                      <p className="text-[9px] text-zinc-450 font-sans lowercase">
+                        provide a mockup file or enter a website address below.
                       </p>
                     </div>
 
@@ -485,11 +487,11 @@ export default function App() {
                             <UploadCloud className="h-4 w-4" />
                           </div>
                           <div>
-                            <p className="font-sans font-black text-[11px] text-zinc-900">
-                              Upload mockup file or click
+                            <p className="font-sans font-black text-[10px] text-zinc-900 lowercase">
+                              upload mockup file or click
                             </p>
-                            <p className="text-[9px] text-zinc-500 font-sans font-medium">
-                              Supports images (.png, .jpg)
+                            <p className="text-[8.5px] text-zinc-500 font-sans font-medium lowercase">
+                              supports images (.png, .jpg)
                             </p>
                           </div>
                         </div>
@@ -498,8 +500,8 @@ export default function App() {
 
                     {/* Optional address field */}
                     <div className="space-y-1.5 text-left pb-1">
-                      <label className="text-[9px] font-mono tracking-widest font-black text-zinc-500 uppercase block pl-1">
-                        Web URL Location (Alternative)
+                      <label className="text-[8px] font-mono tracking-widest font-black text-zinc-400 lowercase block pl-1">
+                        web url location (alternative)
                       </label>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-500">
@@ -520,8 +522,8 @@ export default function App() {
                       type="submit"
                       className="w-full bg-zinc-950 hover:bg-zinc-850 text-white py-3 px-4 rounded-xl font-sans font-black text-xs flex items-center justify-center gap-2 transition-all shadow-md active:scale-98 min-h-[44px] cursor-pointer"
                     >
-                      <Zap className="h-4 w-4" />
-                      Deconstruct Layout
+                      <Zap className="h-3.5 w-3.5" />
+                      <span className="lowercase">deconstruct layout</span>
                     </button>
                   </form>
 
