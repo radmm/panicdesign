@@ -1,0 +1,6 @@
+{
+  "name": "UX Stress Agent",
+  "description": "An AI agent that simulates anxious, distracted, and first-time users to evaluate usability friction on your UI screenshot or URL, returning structural statistical evaluations and friction scores.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
