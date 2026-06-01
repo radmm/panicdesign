@@ -205,9 +205,7 @@ export default function App() {
           setLoading(false);
 
           if (fetchedReportRef.current) {
-            if (fetchErrorRef.current) {
-              setNoticeText("Verification Mode: Generated professional interface metrics compiles locally. To enable advanced computer-vision screenshot analysis, please set your GEMINI_API_KEY inside workspace settings.");
-            }
+            // Verification Notice text has been removed from public eye as requested
             
             const updated = [fetchedReportRef.current, ...savedReports];
             saveReportList(updated);
@@ -243,11 +241,11 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#f8f9fa]/70 text-zinc-900 font-sans antialiased flex flex-col justify-between relative overflow-hidden">
       
-      {/* Premium Saturated Multi-Color Orbital Gradient Blobs Floating Behind */}
+      {/* Premium Highly Saturated Multi-Color Orbital Gradient Blobs Floating Behind */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute -top-[5%] -left-[5%] w-[600px] h-[600px] rounded-full bg-gradient-to-br from-indigo-500/35 via-purple-500/25 to-pink-500/15 blur-[120px] animate-orb-indigo" />
-        <div className="absolute top-[25%] -right-[10%] w-[700px] h-[700px] rounded-full bg-gradient-to-br from-rose-500/30 via-orange-400/20 to-amber-300/15 blur-[130px] animate-orb-rose" />
-        <div className="absolute -bottom-[5%] left-[10%] w-[550px] h-[550px] rounded-full bg-gradient-to-tr from-cyan-500/30 via-sky-400/25 to-emerald-300/15 blur-[110px] animate-orb-sky" />
+        <div className="absolute -top-[5%] -left-[5%] w-[600px] h-[600px] rounded-full bg-gradient-to-br from-indigo-600/60 via-purple-600/45 to-pink-500/35 blur-[100px] animate-orb-indigo" />
+        <div className="absolute top-[20%] -right-[10%] w-[700px] h-[700px] rounded-full bg-gradient-to-br from-rose-600/60 via-orange-500/40 to-amber-400/35 blur-[110px] animate-orb-rose" />
+        <div className="absolute -bottom-[5%] left-[10%] w-[550px] h-[550px] rounded-full bg-gradient-to-tr from-cyan-500/55 via-sky-500/45 to-emerald-400/35 blur-[90px] animate-orb-sky" />
       </div>
 
       {/* Centered Premium Title Header Bar */}
@@ -259,8 +257,8 @@ export default function App() {
               <Cpu className="h-2.5 w-2.5 text-white" />
             </div>
             <div className="flex flex-col">
-              <span className="font-sans font-black text-zinc-900 tracking-tight text-[11px] leading-none">
-                UX Stress Agent
+              <span className="font-sans font-black text-rose-600 tracking-tight text-[11px] leading-none">
+                panic.design
               </span>
               <span className="font-mono text-[7px] text-zinc-450 uppercase tracking-widest font-bold mt-0.5">
                 usability indexer
@@ -312,24 +310,7 @@ export default function App() {
       {/* Main Single-Screen Workspace Container with relative indexing */}
       <main className="flex-grow max-w-6xl w-full mx-auto p-4 md:p-6 space-y-6 relative z-10">
         
-        {/* Notice Indicator Banner */}
-        {noticeText && (
-          <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-2xl flex items-start gap-3 shadow-xs max-w-4xl mx-auto">
-            <Info className="h-5 w-5 text-zinc-700 flex-shrink-0 mt-0.5" />
-            <div className="space-y-1">
-              <p className="font-sans font-black text-xs text-zinc-950">Sandbox Mode</p>
-              <p className="text-xs text-zinc-750 leading-relaxed font-sans font-medium">
-                {noticeText}
-              </p>
-              <button 
-                onClick={() => setNoticeText(null)}
-                className="text-[10px] uppercase font-mono font-black text-zinc-900 hover:underline pt-1 block cursor-pointer"
-              >
-                Dismiss Notice
-              </button>
-            </div>
-          </div>
-        )}
+        {/* Notice Indicator Banner Removed for Clean Public View */}
 
         <AnimatePresence mode="wait">
           
@@ -579,7 +560,7 @@ export default function App() {
             <span>Telemetry v1.65</span>
           </div>
           <p className="font-sans font-normal text-zinc-400">
-            &copy; 2026 UX Stress Agent
+            &copy; 2026 panic.design
           </p>
         </div>
       </footer>

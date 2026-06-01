@@ -259,7 +259,7 @@ async function initializeServer() {
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`UX Stress Agent server running on http://0.0.0.0:${PORT}`);
+    console.log(`panic.design server running on http://0.0.0.0:${PORT}`);
   });
 }
 

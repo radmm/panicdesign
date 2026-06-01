@@ -12,6 +12,10 @@ import {
 } from "lucide-react";
 import { PersonaReport } from "../types";
 
+import anxiousAvatar from "../assets/images/anxious_avatar_1780323287333.png";
+import firstTimeAvatar from "../assets/images/first_time_avatar_1780323310756.png";
+import distractedAvatar from "../assets/images/distracted_avatar_1780323329427.png";
+
 interface PersonaDetailProps {
   personas: {
     anxious: PersonaReport;
@@ -46,6 +50,7 @@ export default function PersonaDetail({ personas }: PersonaDetailProps) {
       bgClass: "hover:shadow-lg transition-shadow border-zinc-200/85",
       textColor: "text-rose-600",
       icon: AlertOctagon,
+      avatar: anxiousAvatar,
     },
     {
       key: "distracted" as const,
@@ -57,6 +62,7 @@ export default function PersonaDetail({ personas }: PersonaDetailProps) {
       bgClass: "hover:shadow-lg transition-shadow border-zinc-200/85",
       textColor: "text-amber-600",
       icon: Eye,
+      avatar: distractedAvatar,
     },
     {
       key: "firstTime" as const,
@@ -68,6 +74,7 @@ export default function PersonaDetail({ personas }: PersonaDetailProps) {
       bgClass: "hover:shadow-lg transition-shadow border-zinc-200/85",
       textColor: "text-emerald-600",
       icon: Layers,
+      avatar: firstTimeAvatar,
     }
   ];
 
@@ -86,7 +93,7 @@ export default function PersonaDetail({ personas }: PersonaDetailProps) {
 
       {/* 3 Parallel statistics cards (Locus-Like web UI) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {personaCards.map(({ key, name, subtitle, description, report, color, bgClass, textColor, icon: IconComponent }) => {
+        {personaCards.map(({ key, name, subtitle, description, report, color, bgClass, textColor, icon: IconComponent, avatar }) => {
           const isExpanded = !!expanded[key];
           
           return (
@@ -99,25 +106,39 @@ export default function PersonaDetail({ personas }: PersonaDetailProps) {
                 {/* Micro heading line */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 text-zinc-450">
-                    <IconComponent className={`h-4.5 w-4.5 ${textColor}`} />
-                    <span className="font-mono text-[9px] uppercase tracking-widest font-extrabold text-zinc-400">
+                    <IconComponent className={`h-[14px] w-[14px] ${textColor}`} />
+                    <span className="font-mono text-[8px] uppercase tracking-widest font-extrabold text-zinc-450 shadow-none">
                       {subtitle}
                     </span>
                   </div>
-                  <span className="bg-zinc-100 font-mono text-[9px] text-zinc-500 px-2.5 py-0.5 rounded-full font-bold">
+                  <span className="bg-zinc-100/50 dark:bg-zinc-900 border border-white/10 font-mono text-[7.5px] text-zinc-500 px-2 py-0.5 rounded uppercase font-black tracking-widest">
                     SYSTEM SIM
                   </span>
                 </div>
 
-                {/* Persona Identification header */}
-                <div>
-                  <h4 className="font-sans font-black text-lg text-zinc-900 tracking-tight">
-                    {name}
-                  </h4>
-                  <p className="text-zinc-500 font-sans text-xs mt-1 leading-relaxed">
-                    {description}
-                  </p>
+                {/* Persona Identification header with beautiful minimalist circular avatar */}
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full border border-zinc-200/60 shadow-xs bg-white/40 overflow-hidden shrink-0 select-none flex items-center justify-center">
+                    <img 
+                      src={avatar} 
+                      alt={name} 
+                      className="h-full w-full object-cover rounded-full"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+                  <div>
+                    <h4 className="font-sans font-black text-sm text-zinc-900 tracking-tight leading-tight">
+                      {name}
+                    </h4>
+                    <span className="font-mono text-[8px] uppercase tracking-wider text-zinc-400 font-bold block">
+                      Audience Profile
+                    </span>
+                  </div>
                 </div>
+
+                <p className="text-zinc-650 font-sans text-xs leading-relaxed">
+                  {description}
+                </p>
 
                 {/* Massive Statistics Graphic Label (Locus-Inspired) */}
                 <div className="pt-2">

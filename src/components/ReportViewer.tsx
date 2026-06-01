@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { StressTestReport, ActionableFix } from "../types";
 import PersonaDetail from "./PersonaDetail";
+import BehavioralDashboard from "./BehavioralDashboard";
 
 interface ReportViewerProps {
   report: StressTestReport;
@@ -258,48 +259,48 @@ export default function ReportViewer({ report, onBack, onDelete }: ReportViewerP
       <PersonaDetail personas={report.personas} />
 
       {/* Actionable Code Fixes & Layout Adjustments */}
-      <div className="glass-premium rounded-[24px] p-5.5 space-y-5">
+      <div className="glass-premium rounded-[20px] p-4.5 space-y-3.5">
         <div>
-          <h3 className="font-sans font-black text-base text-zinc-900 tracking-tight flex items-center gap-2">
-            <Wrench className="h-4.5 w-4.5 text-zinc-700" />
+          <h3 className="font-sans font-black text-xs text-zinc-900 tracking-tight flex items-center gap-1.5 leading-none">
+            <Wrench className="h-3.5 w-3.5 text-zinc-700" />
             Recommended UI Upgrades ({report.fixes.length})
           </h3>
-          <p className="text-xs text-zinc-500 mt-1 font-sans font-medium leading-normal">
-            Targeted layout and visual adjustments calculated to optimize reading pathways and minimize conversion friction across all personas.
+          <p className="text-[10px] text-zinc-500 mt-1 font-sans font-normal leading-normal">
+            Targeted layout and visual adjustments calculated to optimize reading pathways and minimize conversion friction.
           </p>
         </div>
 
         {/* Actionable fixes lists */}
-        <div className="space-y-3">
+        <div className="space-y-2">
           {report.fixes.map((fix, index) => {
             const isCompleted = !!completedFixes[index];
             return (
               <div 
                 key={index}
                 onClick={() => toggleFix(index)}
-                className={`p-4 border rounded-2xl flex gap-3.5 cursor-pointer transition-all ${
+                className={`p-3 border rounded-xl flex gap-2.5 cursor-pointer transition-all ${
                   isCompleted 
-                    ? "bg-emerald-50/20 border-emerald-305/40" 
-                    : "bg-white/30 border-white/20 hover:bg-white/50"
+                    ? "bg-emerald-50/15 border-emerald-305/30" 
+                    : "bg-white/30 border-white/10 hover:bg-white/50"
                 }`}
               >
-                {/* Large custom toggle checkbox */}
+                {/* Custom toggle checkbox */}
                 <div className="mt-0.5 flex-shrink-0">
                   {isCompleted ? (
-                    <CheckSquare className="h-4.5 w-4.5 text-emerald-600" />
+                    <CheckSquare className="h-3.5 w-3.5 text-emerald-600" />
                   ) : (
-                    <Square className="h-4.5 w-4.5 text-zinc-400 hover:text-zinc-650" />
+                    <Square className="h-3.5 w-3.5 text-zinc-450 hover:text-zinc-650" />
                   )}
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 space-y-1">
-                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 border-b border-white/10 pb-1.5">
-                    <span className={`font-sans font-bold text-xs text-zinc-900 leading-snug ${isCompleted ? "line-through text-zinc-400 font-normal" : "text-zinc-900"}`}>
+                <div className="flex-1 space-y-0.5">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-1.5 border-b border-white/10 pb-1">
+                    <span className={`font-sans font-bold text-[11px] text-zinc-900 leading-snug ${isCompleted ? "line-through text-zinc-400 font-normal" : "text-zinc-900"}`}>
                       {fix.issue}
                     </span>
                     {/* Minimalist modern metadata indicator tags */}
-                    <div className="flex items-center gap-1.5 flex-shrink-0 font-mono text-[8px] uppercase tracking-wider text-zinc-400 select-none">
+                    <div className="flex items-center gap-1.5 flex-shrink-0 font-mono text-[7.5px] uppercase tracking-wider text-zinc-400 select-none">
                       <span className={getDifficultyColorClass(fix.difficulty)}>
                         {fix.difficulty}
                       </span>
@@ -310,7 +311,7 @@ export default function ReportViewer({ report, onBack, onDelete }: ReportViewerP
                     </div>
                   </div>
 
-                  <p className={`text-xs font-sans leading-relaxed pt-1 ${isCompleted ? "text-zinc-400 italic" : "text-zinc-600"}`}>
+                  <p className={`text-[10.5px] font-sans leading-normal pt-0.5 ${isCompleted ? "text-zinc-400 italic" : "text-zinc-650"}`}>
                     {fix.recommendation}
                   </p>
                 </div>
@@ -319,6 +320,22 @@ export default function ReportViewer({ report, onBack, onDelete }: ReportViewerP
           })}
         </div>
       </div>
+
+      {/* Dynamic Premium Ambient Gradient Connection */}
+      <div className="relative py-4 select-none pointer-events-none flex flex-col items-center justify-center">
+        {/* Glow backdrop blob */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] h-12 bg-gradient-to-r from-rose-500/12 via-amber-400/9 to-purple-600/12 rounded-full blur-2xl opacity-90" />
+        {/* Subtle multi-stop gradient track with fadeout edges */}
+        <div className="w-full h-px bg-gradient-to-r from-transparent via-rose-500/25 via-amber-500/35 via-purple-600/25 to-transparent" />
+        {/* Sleek central cognitive node badge indicating active telemetry simulation connection */}
+        <div className="absolute bg-white/75 backdrop-blur-md border border-rose-500/15 px-3 py-0.5 rounded-full text-[7.5px] font-mono font-bold tracking-widest text-zinc-500 lowercase flex items-center gap-1.5 shadow-xs">
+          <span className="h-1.5 w-1.5 rounded-full bg-rose-500 animate-pulse" />
+          live telemetry bridge
+        </div>
+      </div>
+
+      {/* Advanced Animated Behavioral Dashboard Projection */}
+      <BehavioralDashboard report={report} />
     </div>
   );
 }
