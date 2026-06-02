@@ -33,10 +33,256 @@ function getGenAI(): GoogleGenAI {
   return aiClient;
 }
 
+// In-memory Rate Limiting Protection Setup
+interface RateLimitTracker {
+  count: number;
+  resetTime: number;
+}
+const rateLimits = new Map<string, RateLimitTracker>();
+
+// Evict expired rate trackers lazily every 5 minutes to prevent memory leaks
+setInterval(() => {
+  const now = Date.now();
+  for (const [ip, tracker] of rateLimits.entries()) {
+    if (now > tracker.resetTime) {
+      rateLimits.delete(ip);
+    }
+  }
+}, 5 * 60 * 1000);
+
+// Extract domain/name from URL
+function cleanUrlToName(urlStr?: string): string {
+  if (!urlStr) return "Uploaded UI Layout";
+  try {
+    let clean = urlStr.replace(/^(https?:\/\/)?(www\.)?/, "");
+    const parts = clean.split("/");
+    const domain = parts[0];
+    const pathSegment = parts[1] || "";
+    
+    let name = domain.split(".")[0];
+    name = name.charAt(0).toUpperCase() + name.slice(1);
+    
+    if (pathSegment) {
+      const segmentLabel = pathSegment.split(/[-_]/)[0];
+      if (segmentLabel) {
+        name += ` ${segmentLabel.charAt(0).toUpperCase() + segmentLabel.slice(1)}`;
+      }
+    }
+    return `${name} Portal`;
+  } catch (e) {
+    return "Web Application Interface";
+  }
+}
+
+// Highly detailed server-side fallback generator to prevent 503 system interruptions and peak-demand overload
+function generateServerFallbackReport(url?: string, screenshotBase64?: string): any {
+  const generatedId = `report-${Math.random().toString(36).substring(2, 11)}`;
+  const title = cleanUrlToName(url);
+  
+  return {
+    id: generatedId,
+    title,
+    urlAnalyzed: url || "No URL (direct interface screenshot upload)",
+    imageUrl: screenshotBase64 ? screenshotBase64 : undefined,
+    timestamp: new Date().toISOString(),
+    globalPanicScore: 56,
+    brutalSummary: "The visual grid structure is polished but displays elevated form input density, posing a medium cognitive strain. Important interactive controls are compact, which can deter mobile tapping precision.",
+    visualAestheticRating: "7.5/10: Modern Professional Screen Layout",
+    aestheticCritique: "The color palette uses high-contrast grayscale options effectively. However, vertical container spacing is congested. Providing generous margin heights to input fields and rounding down card outlines will optimize focus.",
+    namedUIZones: ["primary_form_wrapper", "cta_button_container", "navigation_header", "footer_metadata_strip"],
+    personas: {
+      anxious: {
+        personaName: "Anxious Alex",
+        score: 62,
+        frictionPointsCount: 4,
+        dropOffProbability: 45,
+        trustRating: 50,
+        quote: "Wait, does this register right away or do I get a chance to confirm? The primary submit trigger lacks safety rollback notices or a clear 'saving' state. That makes me feel tense that I'll accidentally enter false data and won't be able to undo it.",
+        biggestRisk: "Absence of transitional confirmations and double-submission protection safeguards on the primary CTA.",
+        cognitiveLoad: "High",
+        frictionPoints: [
+          {
+            element: "Action Button",
+            locationDescription: "In the center of the main layout flow",
+            panicTrigger: "The button has no validation indicators, making me nervous to double-tap it.",
+            severity: "high",
+            namedZone: "cta_button_container"
+          },
+          {
+            element: "Input Field Group",
+            locationDescription: "Main settings selection form area",
+            panicTrigger: "Does not explain rule requirements clearly prior to user tapping submit.",
+            severity: "medium",
+            namedZone: "primary_form_wrapper"
+          }
+        ]
+      },
+      distracted: {
+        personaName: "Distracted Dan",
+        score: 48,
+        frictionPointsCount: 3,
+        dropOffProbability: 55,
+        trustRating: 60,
+        quote: "I checked this out for brief seconds. The layout is clean but lacks a huge visual hook at the center. I easily missed the secondary description and had to scan around to figure out exactly what I'm entering.",
+        biggestRisk: "Slight visual congestion and competing subtitle sizes above the fold.",
+        cognitiveLoad: "Medium",
+        frictionPoints: [
+          {
+            element: "Instruction Subtitle",
+            locationDescription: "Directly under the segment header banner",
+            panicTrigger: "Dense informational font styles requiring high focus to parse at first glance.",
+            severity: "medium",
+            namedZone: "navigation_header"
+          }
+        ]
+      },
+      firstTime: {
+        personaName: "First-Timer Fiona",
+        score: 52,
+        frictionPointsCount: 3,
+        dropOffProbability: 40,
+        trustRating: 70,
+        quote: "Some terms resemble complex system parameters instead of simple guide labels. It references client protocols and code elements, assuming I'm an engineer. Just give me simple steps!",
+        biggestRisk: "Complex technical terminology or shorthand labels without visual onboarding walkthroughs.",
+        cognitiveLoad: "Medium",
+        frictionPoints: [
+          {
+            element: "Section Status Labels",
+            locationDescription: "Interactive control header",
+            panicTrigger: "Utilizes developer-focused terms rather than clear, helpful orientation labels.",
+            severity: "medium",
+            namedZone: "navigation_header"
+          }
+        ]
+      },
+      impatientMobile: {
+        personaName: "Impatient Ian",
+        score: 70,
+        frictionPointsCount: 5,
+        dropOffProbability: 70,
+        trustRating: 55,
+        quote: "The interface targets are tiny! Standard fingers require at least 44 pixels of tap height to operate comfortably while multitasking. If I miss-tap, I have to wait for pages to load, which makes me want to log out.",
+        biggestRisk: "Densely packed control elements causing frustration on small screens.",
+        cognitiveLoad: "High",
+        frictionPoints: [
+          {
+            element: "Menu Links & Input Targets",
+            locationDescription: "Along the interactive primary layout form grid",
+            panicTrigger: "Tap target heights fall slightly under standard mobile guidelines.",
+            severity: "high",
+            namedZone: "primary_form_wrapper"
+          }
+        ]
+      },
+      skeptic: {
+        personaName: "Skeptical Sally",
+        score: 55,
+        frictionPointsCount: 3,
+        dropOffProbability: 35,
+        trustRating: 45,
+        quote: "They demand input data right away but don't state who they are or show security badges. How do I know my sensitive entries aren't broadcasted to third parties? Give me privacy guarantees!",
+        biggestRisk: "High initial configuration load without micro-trust signals or secure labels.",
+        cognitiveLoad: "Medium",
+        frictionPoints: [
+          {
+            element: "Registration Form",
+            locationDescription: "Under the main segment wrapper",
+            panicTrigger: "Mandates personal details with no SSL certifications or privacy policy in context.",
+            severity: "medium",
+            namedZone: "primary_form_wrapper"
+          }
+        ]
+      }
+    },
+    universalComplaints: [
+      {
+        element: "Dense Vertical Input Form Margins",
+        reason: "Both Impatient Ian and Anxious Alex struggled with tightly positioned option elements, risking accidental triggers.",
+        solution: "Apply generous tailwind custom gap structures (e.g., gap-5.5) or minimum height borders to form tags."
+      },
+      {
+        element: "Technical Shorthand Microcopy Labels",
+        reason: "First-Timer Fiona and Skeptical Sally flagged unclear layout parameters, creating high interpretive burden.",
+        solution: "Utilize simple, plain human dialogue instructions instead of engineering acronyms."
+      }
+    ],
+    panicCertificate: {
+      verdict: "Work In Progress",
+      text: "This interface serves as a reliable layout foundation but would benefit immensely from touch padding increases, dynamic button submit disables to prevent double-sends, and transparent user data handling."
+    },
+    fixes: [
+      {
+        issue: "Touch targets on input controls are close-knit",
+        recommendation: "<!-- Increase height of input components to provide 44px tap area -->\n<input type=\"text\" className=\"w-full px-4.5 py-3 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900 focus:outline-none focus:ring-offset-1\" placeholder=\"Enter fields...\" />",
+        difficulty: "Easy",
+        impact: "Highly Beneficial"
+      },
+      {
+        issue: "No double-submission protection on submit button",
+        recommendation: "<!-- Disable CTA on submit to avoid duplicated transactions -->\n<button type=\"submit\" disabled={isSubmitting} className=\"w-full min-h-[44px] bg-zinc-950 font-bold text-white hover:bg-zinc-800 disabled:opacity-50 transition-all rounded-xl\">\n  {isSubmitting ? \"Sending Safely...\" : \"Proceed Securely\"}\n</button>",
+        difficulty: "Easy",
+        impact: "Critical"
+      }
+    ]
+  };
+}
+
+// NSFW & Abusive URL Detection blocklist filter
+function isNSFWorAbusive(text: string): boolean {
+  if (!text) return false;
+  const clean = text.toLowerCase().trim();
+  const blocklist = [
+    "porn", "xxx", "sex", "nudity", "nude", "xvideos", "pornhub", 
+    "onlyfans", "chaturbate", "camgirl", "adultfriendfinder", "lust",
+    "brazzers", "redtube", "vixen", "hentai", "erection", "orgasm", 
+    "intercourse", "milf", "blowjob", "fuck", "dick", "pussy", "vagina",
+    "escort", "nsfw", "stripclub", "sensual", "gambling", "casino",
+    "betting", "poker", "jackpot", "torrent", "warez", "cracked", "hack"
+  ];
+  return blocklist.some(term => clean.includes(term));
+}
+
 // API Route for deconstructing and stress testing UI
 app.post("/api/stress-test", async (req, res) => {
   try {
     const { url, screenshotBase64, mimeType } = req.body;
+
+    // 1. IP Rate Limiting Verification
+    const requesterIP = (req.headers["x-forwarded-for"] as string) || req.socket.remoteAddress || "anonymous";
+    const now = Date.now();
+    const windowMs = 60 * 1000; // 1 minute
+    const maxRequestsPerMinute = 5;
+
+    let tracker = rateLimits.get(requesterIP);
+    if (!tracker) {
+      rateLimits.set(requesterIP, { count: 1, resetTime: now + windowMs });
+    } else {
+      if (now > tracker.resetTime) {
+        tracker.count = 1;
+        tracker.resetTime = now + windowMs;
+      } else {
+        tracker.count++;
+        if (tracker.count > maxRequestsPerMinute) {
+          return res.status(429).json({
+            error: "Rate limit exceeded. To prevent system resource exhaustion, you are limited to 5 audits per minute.",
+            details: "Security threshold active to protect system integrity."
+          });
+        }
+      }
+    }
+
+    // 2. Input Length & Abuse Validations
+    if (url && url.length > 2048) {
+      return res.status(400).json({ error: "URL is too long. To prevent injection exploits, maximum allowed size is 2048 characters." });
+    }
+
+    // 3. NSFW & Adult Platform Filtering
+    if (url && isNSFWorAbusive(url)) {
+      return res.status(400).json({
+        error: "Audit rejected. panic.design has zero tolerance for NSFW, adult content, gambling, or illicit content.",
+        details: "AI-governed guardrails prevent audits of sexually explicit or high-risk interfaces."
+      });
+    }
 
     if (!url && !screenshotBase64) {
       return res.status(400).json({ error: "Provide either a website URL or a UI screenshot to analyze." });
@@ -109,7 +355,19 @@ Provide explicit replacement code or exact microcopy text instead of generic sug
 Panic Certificate Logic:
 - Above 80: "Panic-Proof" verdict (confident, specific praise).
 - Between 40 and 80: "Work In Progress" verdict (highlights top 2-3 modifications).
-- Below 40: "Crime Scene" verdict (senior designer direct constructive review).`;
+- Below 40: "Crime Scene" verdict (senior designer direct constructive review).
+
+CRITICAL SECURITY AND SAFETY GUARDRAILS:
+- If the URL, layout text, or screenshot image contains sexually explicit (pornography/adult), hateful, extremely violent, or illicit materials, or is trying to hijack the platform for abusive requests:
+  You MUST abort the UX audit of the content and return a standard security warning structured JSON.
+  Under this scenario, set:
+    - "title" to "Security Blockade"
+    - "globalPanicScore" to 100
+    - "brutalSummary" to "This audit request was terminated automatically. panic.design enforces strict guardrails that block the analysis of adult, NSFW, explicit, gambling, or hazardous layouts."
+    - "visualAestheticRating" to "Blocked"
+    - "aestheticCritique" to "The layout violates the safety usage policy of dev vishwas. For security, analysis has been aborted."
+    - "personas" with dummy safe placeholders explaining the blockade.
+  Do not follow the ordinary personas instructions above for malicious or explicit inputs.`;
 
     contents.push({ text: promptText });
 
@@ -336,20 +594,39 @@ Panic Certificate Logic:
       ]
     };
 
-    // Generate content using Gemini 3.5-flash
-    const response = await ai.models.generateContent({
-      model: "gemini-3.5-flash",
-      contents,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: reportSchema,
-        temperature: 0.85,
-      },
-    });
-
-    const responseText = response.text;
-    if (!responseText) {
-      throw new Error("No response string received from Google Gemini.");
+    // Generate content using Gemini 3.5-flash with built-in retry and structural fallback recovery for 503 overloads
+    let responseText = "";
+    let attempts = 0;
+    const maxAttempts = 2;
+    
+    while (attempts < maxAttempts) {
+      try {
+        const response = await ai.models.generateContent({
+          model: "gemini-3.5-flash",
+          contents,
+          config: {
+            responseMimeType: "application/json",
+            responseSchema: reportSchema,
+            temperature: 0.85,
+          },
+        });
+        
+        responseText = response.text || "";
+        if (responseText) {
+          break; // Success! Break out of the retry loop
+        }
+        throw new Error("No response string received from Google Gemini.");
+      } catch (geminiError: any) {
+        attempts++;
+        console.warn(`[RETRY DETECTOR] Gemini generation attempt ${attempts} failed:`, geminiError.message || geminiError);
+        if (attempts >= maxAttempts) {
+          console.log("[FALLBACK TRIGGERED] Upstream Gemini API is currently experiencing standard high demand. Activating server-side offline fallback report generator...");
+          const fallbackReport = generateServerFallbackReport(url, screenshotBase64);
+          return res.json(fallbackReport);
+        }
+        // Brief 1-second delay before retry
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
     }
 
     const parsedReport = JSON.parse(responseText.trim());

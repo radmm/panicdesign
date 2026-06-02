@@ -484,8 +484,8 @@ export default function App() {
                   cognitive walkthrough rig
                 </span>
                 
-                <div className="h-10 flex items-center justify-center">
-                  <h2 className="font-sans font-black text-xl text-zinc-900 tracking-tight leading-snug lowercase text-center">
+                <div className="min-h-12 py-1.5 flex items-center justify-center">
+                  <h2 className="font-sans font-black text-2xl md:text-3xl text-zinc-900 tracking-tighter leading-tight lowercase text-center">
                     ready to map your user sessions?
                   </h2>
                 </div>
@@ -636,10 +636,8 @@ export default function App() {
       {/* Elegant, high-contrast, minimalist responsive Footer */}
       <footer className="py-8 mt-12 border-t border-zinc-200/45">
         <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 font-mono text-[9px] text-zinc-400">
-          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 uppercase tracking-widest">
-            <span>JPG / PNG Capture</span>
-            <span className="text-zinc-300">•</span>
-            <span>Telemetry v1.65</span>
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 lowercase tracking-wide text-zinc-400">
+            <span>made with &lt;3 by dev vishwas</span>
           </div>
           <p className="font-sans font-normal text-zinc-400">
             &copy; 2026 panic.design
