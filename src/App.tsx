@@ -37,6 +37,7 @@ export default function App() {
   
   // Loading simulator telemetry properties
   const [loading, setLoading] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState(0);
   const [terminalLogs, setTerminalLogs] = useState<string[]>([]);
   const [currentDisplayStep, setCurrentDisplayStep] = useState(0);
   const [errorText, setErrorText] = useState<string | null>(null);
@@ -156,6 +157,7 @@ export default function App() {
     setErrorText(null);
     setNoticeText(null);
     setLoading(true);
+    setLoadingProgress(0);
     setTerminalLogs([logSteps[0]]);
     
     // Reset refs
@@ -164,6 +166,26 @@ export default function App() {
     fetchCompletedRef.current = false;
     fetchedReportRef.current = null;
     fetchErrorRef.current = null;
+
+    // High frequency smooth percentage easing solver
+    const progressIntervalId = setInterval(() => {
+      setLoadingProgress(current => {
+        if (fetchCompletedRef.current) {
+          if (current >= 100) {
+            clearInterval(progressIntervalId);
+            return 100;
+          }
+          return Math.min(100, current + 15);
+        } else {
+          if (current < 98) {
+            const distance = 98 - current;
+            const delta = Math.max(0.4, distance * 0.05 + (Math.random() * 1.5));
+            return parseFloat((current + delta).toFixed(1));
+          }
+          return 98;
+        }
+      });
+    }, 60);
 
     // Trigger asynchronous API call in the background
     fetch("/api/stress-test", {
@@ -211,7 +233,9 @@ export default function App() {
       } else {
         if (fetchCompletedRef.current) {
           clearInterval(intervalId);
+          clearInterval(progressIntervalId);
           setLoading(false);
+          setLoadingProgress(100);
 
           if (fetchedReportRef.current) {
             // Verification Notice text has been removed from public eye as requested
@@ -343,46 +367,94 @@ export default function App() {
           ) : loading ? (
             /* Custom Real-Time Telemetry Terminal */
             <motion.div 
-              key="terminal-loader"
-              initial={{ opacity: 0, scale: 0.95 }}
+              key="glowing-loader"
+              initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              className="max-w-md w-full mx-auto glass-premium shadow-2xl p-5 md:p-6 rounded-3xl min-h-[350px] flex flex-col justify-between font-mono text-xs text-zinc-800 relative z-10"
+              className="max-w-md w-full mx-auto glass-premium shadow-2xl p-6.5 rounded-3xl min-h-[360px] flex flex-col justify-between text-zinc-800 relative z-10 bg-white/75 backdrop-blur-xl border border-white/50"
             >
-              <div className="flex items-center justify-between border-b border-white/25 pb-3 mb-4">
-                <div className="flex items-center gap-1.5 text-zinc-500">
+              {/* Header */}
+              <div className="flex items-center justify-between border-b border-zinc-200/40 pb-3">
+                <div className="flex items-center gap-1.5">
                   <Terminal className="h-3.5 w-3.5 text-zinc-650" />
-                  <span className="font-bold text-[9px] tracking-wider text-zinc-600">usability_agent_walkthrough.sh</span>
+                  <span className="font-mono font-bold text-[9px] tracking-wider text-zinc-600 lowercase">usability_telemetry_rig.sh</span>
                 </div>
-                <span className="bg-white/20 backdrop-blur-md border border-white/40 text-zinc-650 text-[8px] font-bold px-2 py-0.5 rounded-full lowercase tracking-tight">
-                  analyzing cognitive load
+                <div className="flex items-center gap-1">
+                  <span className="bg-zinc-950 text-white text-[7.5px] font-mono font-bold px-2 py-0.5 rounded-full lowercase">
+                    active simulation
+                  </span>
+                </div>
+              </div>
+
+              {/* Highly Animated Circle & Big Percent HUD */}
+              <div className="py-6 flex flex-col items-center justify-center space-y-4">
+                <div className="relative flex items-center justify-center">
+                  {/* Outer breathing background glow */}
+                  <div className="absolute inset-x-0 inset-y-0 w-28 h-28 bg-gradient-to-r from-rose-500/10 via-amber-500/10 to-indigo-600/10 rounded-full blur-xl animate-pulse" />
+                  
+                  {/* Curved path progress border */}
+                  <svg className="w-28 h-28 transform -rotate-90">
+                    <circle
+                      cx="56"
+                      cy="56"
+                      r="48"
+                      stroke="#e4e4e7"
+                      strokeWidth="5.5"
+                      fill="transparent"
+                      className="opacity-45"
+                    />
+                    <circle
+                      cx="56"
+                      cy="56"
+                      r="48"
+                      stroke="url(#loaderGradient)"
+                      strokeWidth="5.5"
+                      fill="transparent"
+                      strokeDasharray="301.6"
+                      strokeDashoffset={301.6 - (loadingProgress / 100) * 301.6}
+                      strokeLinecap="round"
+                      className="transition-all duration-300 ease-out"
+                    />
+                    <defs>
+                      <linearGradient id="loaderGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#f43f5e" />
+                        <stop offset="50%" stopColor="#fbbf24" />
+                        <stop offset="100%" stopColor="#6366f1" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+
+                  {/* Absolute Counter Display */}
+                  <div className="absolute text-center">
+                    <span className="font-sans font-black text-3xl text-zinc-900 tracking-tighter block leading-none">
+                      {Math.floor(loadingProgress)}%
+                    </span>
+                    <span className="font-mono text-[6.5px] text-zinc-400 font-extrabold uppercase tracking-widest block mt-1">
+                      resolve index
+                    </span>
+                  </div>
+                </div>
+
+                {/* Micro active diagnostic state indicator */}
+                <span className="bg-rose-50/75 border border-rose-150/45 text-rose-700 text-[7px] font-mono px-2 py-0.5 rounded-full select-none lowercase tracking-wide">
+                  {loadingProgress < 30 ? "booting parser..." : loadingProgress < 70 ? "simulating personas..." : loadingProgress < 95 ? "evaluating constraints..." : "finalizing reports..."}
                 </span>
               </div>
 
-              {/* Real-time scrolling message grid with light layout styling */}
-              <div className="flex-1 space-y-3.5 overflow-y-auto max-h-[240px] pr-2">
-                {terminalLogs.map((log, index) => {
-                  let alertColorClass = "text-zinc-600 border-zinc-300 bg-white/10";
-                  if (log.includes("Anxious")) {
-                    alertColorClass = "text-rose-700 border-rose-300 bg-rose-50/25";
-                  } else if (log.includes("Distracted")) {
-                    alertColorClass = "text-amber-700 border-amber-300 bg-amber-50/25";
-                  } else if (log.includes("First-Time")) {
-                    alertColorClass = "text-emerald-750 border-emerald-300 bg-emerald-50/25";
-                  }
-                  
-                  return (
-                    <div key={index} className={`leading-relaxed border-l-2 pl-3 py-1 rounded-r-lg ${alertColorClass}`}>
-                      {log}
-                    </div>
-                  );
-                })}
-                <div ref={terminalEndRef}></div>
+              {/* Static descriptive block */}
+              <div className="space-y-2 text-center bg-white/30 border border-white/25 p-4 rounded-2xl shadow-xs">
+                <h4 className="font-sans font-black text-xs text-zinc-900 tracking-tight leading-none lowercase">
+                  cognitive stress evaluation running
+                </h4>
+                <p className="text-zinc-505 font-sans text-[10px] leading-relaxed lowercase">
+                  evaluating layout densities, form cognitive complexities, typography hierarchies, and element constraints across five unique user personas. scanning boundaries...
+                </p>
               </div>
 
-              <div className="mt-5 pt-2.5 border-t border-white/25 text-zinc-500 flex items-center justify-between text-[10px]">
-                <span>stages analyzed: {currentDisplayStep} / 9</span>
-                <RefreshCw className="h-3 w-3 animate-spin text-zinc-500" />
+              {/* Linear mini progress bar */}
+              <div className="mt-5.5 pt-3 border-t border-zinc-200/40 flex justify-between items-center text-[9px] font-mono text-zinc-400 lowercase">
+                <span>connection: active handshakes</span>
+                <span className="font-bold text-zinc-650">stages 1-9: operational</span>
               </div>
             </motion.div>
           ) : activeTab === "scan" ? (

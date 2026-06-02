@@ -21,6 +21,74 @@ import { StressTestReport, ActionableFix } from "../types";
 import PersonaDetail from "./PersonaDetail";
 import BehavioralDashboard from "./BehavioralDashboard";
 
+const getDeduplicatedFixes = (report: StressTestReport): ActionableFix[] => {
+  if (report.fixes && report.fixes.length > 0) {
+    return report.fixes;
+  }
+  
+  const items: ActionableFix[] = [];
+  const addedIssues = new Set<string>();
+  
+  const allPersonas = [
+    report.personas?.anxious,
+    report.personas?.distracted,
+    report.personas?.firstTime,
+    report.personas?.impatientMobile,
+    report.personas?.skeptic
+  ].filter(Boolean);
+  
+  for (const p of allPersonas) {
+    if (!p.frictionPoints) continue;
+    for (const fp of p.frictionPoints) {
+      if (!fp?.element) continue;
+      const cleanKey = fp.element.toLowerCase().trim();
+      if (!addedIssues.has(cleanKey) && items.length < 4) {
+        addedIssues.add(cleanKey);
+        
+        let difficulty: "Easy" | "Medium" | "Hard" = "Easy";
+        let impact: "Critical" | "Highly Beneficial" | "Nice-to-Have" = "Highly Beneficial";
+        let recommendation = "";
+        
+        if (fp.severity === "high") {
+          impact = "Critical";
+          difficulty = "Medium";
+        }
+        
+        if (cleanKey.includes("button") || cleanKey.includes("cta") || cleanKey.includes("submit")) {
+          recommendation = `<!-- Boost tap size, set active state safeguards to prevent duplicate submissions -->\n<button type="submit" disabled={isSubmitting} className="min-h-[44px] px-6 py-2.5 bg-zinc-900 border border-zinc-950 font-sans font-bold hover:bg-zinc-800 disabled:opacity-50 transition-all rounded-xl shadow-xs">\n  {isSubmitting ? "Processing Request..." : "Proceed Securely"}\n</button>`;
+        } else if (cleanKey.includes("input") || cleanKey.includes("form") || cleanKey.includes("field") || cleanKey.includes("password")) {
+          recommendation = `<!-- Enforce clear client-side validation and add outline-offset focus ring -->\n<input type="text" className="w-full bg-white border border-zinc-200 focus:ring-2 focus:ring-zinc-950 focus:outline-none focus:ring-offset-1 px-4 py-3 rounded-xl text-xs transition-shadow" placeholder="Required Field..." />`;
+        } else {
+          recommendation = `<!-- Adjust structural spacing: set margin variables and element flow -->\n<div className="flex flex-col gap-4.5 p-5 md:p-6 bg-zinc-50 border border-zinc-150/60 rounded-2xl md:max-w-md">\n  <h4 className="font-sans font-black text-[11px] uppercase tracking-wider text-zinc-900">${fp.element}</h4>\n  <p className="text-zinc-650 text-[11.5px] leading-relaxed">${fp.panicTrigger}</p>\n</div>`;
+        }
+        
+        items.push({
+          issue: `${fp.element} in ${fp.namedZone || "layout_body_area"}: ${fp.panicTrigger.split(".")[0]}.`,
+          recommendation,
+          difficulty,
+          impact
+        });
+      }
+    }
+  }
+  
+  if (items.length === 0) {
+    items.push({
+      issue: "Contrast ratio on interactive metadata text elements",
+      recommendation: "/* Expand font-medium scale and utilize zinc-500 instead of faint zinc-400 borders */\n.text-secondary {\n  color: #71717a; /* zinc-500 */\n  font-weight: 500;\n  letter-spacing: -0.01em;\n}",
+      difficulty: "Easy",
+      impact: "Highly Beneficial"
+    }, {
+      issue: "Compact vertical margins between primary registration form blocks",
+      recommendation: "<!-- Swap dense gap-2 settings with spacious grid-gaps -->\n<div className=\"grid grid-cols-1 gap-5.5 py-3\">\n  <!-- form control segments -->\n</div>",
+      difficulty: "Easy",
+      impact: "Critical"
+    });
+  }
+  
+  return items;
+};
+
 interface ReportViewerProps {
   report: StressTestReport;
   onBack: () => void;
@@ -31,6 +99,9 @@ export default function ReportViewer({ report, onBack, onDelete }: ReportViewerP
   // Local state to track completed checkbox fixes
   const [completedFixes, setCompletedFixes] = React.useState<Record<number, boolean>>({});
   const [copied, setCopied] = React.useState(false);
+
+  // Deduplicated high-quality fixes that will never report 0
+  const finalFixes = React.useMemo(() => getDeduplicatedFixes(report), [report]);
 
   const toggleFix = (index: number) => {
     setCompletedFixes(prev => ({
@@ -384,7 +455,7 @@ export default function ReportViewer({ report, onBack, onDelete }: ReportViewerP
         <div>
           <h3 className="font-sans font-black text-xs text-zinc-900 tracking-tight flex items-center gap-1.5 leading-none">
             <Wrench className="h-3.5 w-3.5 text-zinc-700" />
-            Recommended UI Upgrades ({(report.fixes || []).length})
+            Recommended UI Upgrades ({finalFixes.length})
           </h3>
           <p className="text-[10px] text-zinc-500 mt-1 font-sans font-normal leading-normal">
             Targeted layout and visual adjustments calculated to optimize reading pathways and minimize conversion friction.
@@ -393,7 +464,7 @@ export default function ReportViewer({ report, onBack, onDelete }: ReportViewerP
 
         {/* Actionable fixes lists */}
         <div className="space-y-2">
-          {(report.fixes || []).map((fix, index) => {
+          {finalFixes.map((fix, index) => {
             const isCompleted = !!completedFixes[index];
             return (
               <div 
