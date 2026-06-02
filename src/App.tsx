@@ -56,7 +56,15 @@ export default function App() {
     try {
       const cached = localStorage.getItem("ux_stress_reports");
       if (cached) {
-        setSavedReports(JSON.parse(cached));
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed)) {
+          const sanitized = parsed.map((rep: any) => ({
+            ...rep,
+            fixes: rep.fixes || [],
+            universalComplaints: rep.universalComplaints || []
+          }));
+          setSavedReports(sanitized);
+        }
       }
     } catch (e) {
       console.error("Failed to parse cached report indexes", e);

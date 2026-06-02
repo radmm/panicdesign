@@ -243,6 +243,7 @@ input[type="email"]:focus-visible {
     panicCertificate: {
       verdict: "Work In Progress",
       text: "The layout contains elements with robust responsive structural potential but is currently limited by compact touch padding sizes and high micro-copy vocabulary strain. Focus priorities should center immediately on optimizing form buttons target depths and removing internal developer codes."
-    }
+    },
+    fixes: mockFixes
   };
 }

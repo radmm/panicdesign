@@ -221,7 +221,7 @@ export default function PersonaDetail({ personas }: PersonaDetailProps) {
                   <div className="space-y-0.5 text-center">
                     <span className="block text-zinc-400 font-extrabold text-[7.5px] tracking-wider">HOTSPOTS</span>
                     <span className="text-zinc-900 font-black text-xs block leading-none mt-1 flex items-center justify-center gap-0.5">
-                      <AlertTriangle className="h-2.5 w-2.5 text-zinc-450 mt-0.5" />
+                      <AlertTriangle className="h-2.5 w-2.5 text-zinc-400 mt-0.5" />
                       {report.frictionPointsCount ?? report.frictionPoints.length}
                     </span>
                   </div>
@@ -231,7 +231,7 @@ export default function PersonaDetail({ personas }: PersonaDetailProps) {
                 <div className="pt-2">
                   <div className="space-y-1">
                     <span className="text-zinc-400 font-extrabold text-[8px] uppercase tracking-wider block font-mono">Primary Failure Risk</span>
-                    <p className="text-xs text-zinc-750 font-sans font-medium leading-relaxed italic">
+                    <p className="text-xs text-zinc-700 font-sans font-medium leading-relaxed italic">
                       &ldquo;{report.biggestRisk}&rdquo;
                     </p>
                   </div>
@@ -240,19 +240,19 @@ export default function PersonaDetail({ personas }: PersonaDetailProps) {
               </div>
 
               {/* Expansion Details Drawer with Toggle */}
-              <div className="pt-3.5 mt-3.5 border-t border-zinc-150/60 space-y-3.5">
+              <div className="pt-3.5 mt-3.5 border-t border-zinc-200/65 space-y-3.5">
                 
                 <button
                   onClick={() => toggleExpand(key)}
-                  className="w-full flex items-center justify-between text-xs font-sans font-extrabold text-zinc-800 hover:text-zinc-650 transition-colors uppercase tracking-wider py-1 cursor-pointer"
+                  className="w-full flex items-center justify-between text-xs font-sans font-extrabold text-zinc-800 hover:text-zinc-600 transition-colors uppercase tracking-wider py-1 cursor-pointer"
                 >
                   <span className="text-[10px] tracking-widest">
                     {isExpanded ? "Hide Inner Dialogue" : "Read Full Dialogue"}
                   </span>
                   {isExpanded ? (
-                    <ChevronUp className="h-3.5 w-3.5 text-zinc-855" />
+                    <ChevronUp className="h-3.5 w-3.5 text-zinc-800" />
                   ) : (
-                    <ChevronDown className="h-3.5 w-3.5 text-zinc-855" />
+                    <ChevronDown className="h-3.5 w-3.5 text-zinc-800" />
                   )}
                 </button>
 
@@ -292,7 +292,7 @@ export default function PersonaDetail({ personas }: PersonaDetailProps) {
                                   <span className="w-4.5 h-4.5 bg-zinc-900 text-white text-[9px] font-mono rounded-full flex items-center justify-center shrink-0">
                                     {index + 1}
                                   </span>
-                                  <code className="text-[10.5px] bg-zinc-100 text-zinc-850 px-1 py-0.5 rounded">
+                                  <code className="text-[10.5px] bg-zinc-100 text-zinc-800 px-1 py-0.5 rounded">
                                     {point.element}
                                   </code>
                                 </span>
@@ -305,7 +305,7 @@ export default function PersonaDetail({ personas }: PersonaDetailProps) {
                                 </span>
                               </div>
 
-                              <div className="text-[11px] font-sans text-zinc-650 leading-relaxed pl-1">
+                              <div className="text-[11px] font-sans text-zinc-600 leading-relaxed pl-1">
                                 {point.namedZone && (
                                   <div className="mb-1">
                                     <span className="font-mono text-[7.5px] font-extrabold uppercase bg-indigo-50 text-indigo-600 border border-indigo-100 px-1 py-0.3 rounded">

@@ -176,7 +176,7 @@ export default function ReportViewer({ report, onBack, onDelete }: ReportViewerP
               <span className="font-sans font-black text-2xl text-white block leading-none">
                 {report.globalPanicScore}
               </span>
-              <span className="font-mono text-[7px] text-zinc-450 uppercase tracking-widest block mt-0.5 font-bold">
+              <span className="font-mono text-[7px] text-zinc-400 uppercase tracking-widest block mt-0.5 font-bold">
                 strain index
               </span>
             </div>
@@ -258,15 +258,15 @@ export default function ReportViewer({ report, onBack, onDelete }: ReportViewerP
               />
             ) : (
               <div className="text-center p-4 space-y-1.5">
-                <AlertOctagon className="h-4 w-4 text-zinc-450 mx-auto animate-none" />
-                <p className="font-sans text-[10px] text-zinc-550 leading-normal">
+                <AlertOctagon className="h-4 w-4 text-zinc-400 mx-auto animate-none" />
+                <p className="font-sans text-[10px] text-zinc-500 leading-normal">
                   Audit executed via URL parsing rules.<br />No physical PNG screenshot provided.
                 </p>
               </div>
             )}
           </div>
 
-          <p className="font-mono text-[8px] text-zinc-405 text-center leading-normal uppercase tracking-wider">
+          <p className="font-mono text-[8px] text-zinc-400 text-center leading-normal uppercase tracking-wider">
             Evaluating alignment, weights & readability
           </p>
         </div>
@@ -289,14 +289,14 @@ export default function ReportViewer({ report, onBack, onDelete }: ReportViewerP
               </div>
             </div>
 
-            <p className="text-zinc-750 font-sans text-xs leading-relaxed">
+            <p className="text-zinc-700 font-sans text-xs leading-relaxed">
               {report.aestheticCritique}
             </p>
           </div>
 
           <div className="mt-4 border-t border-white/15 pt-3 flex gap-2 items-center bg-white/15 p-2 rounded-xl">
             <Sparkles className="h-4 w-4 text-amber-500 flex-shrink-0 animate-none" />
-            <p className="text-[10px] text-zinc-550 leading-normal font-sans">
+            <p className="text-[10px] text-zinc-500 leading-normal font-sans">
               Feedback evaluates typography matching, tracking density, placement of call-to-actions, and element redundancy.
             </p>
           </div>
@@ -317,7 +317,7 @@ export default function ReportViewer({ report, onBack, onDelete }: ReportViewerP
               SCAN INDEXING COMPLETED
             </span>
           </div>
-          <p className="text-[10.5px] text-zinc-550 leading-normal font-sans">
+          <p className="text-[10.5px] text-zinc-500 leading-normal font-sans">
             Our background visual parser completed an isolated boundaries segment scan of your interface structure prior to stress simulation. Detected active layout regions:
           </p>
           <div className="flex flex-wrap gap-2 pt-1 font-mono text-[7.5px] font-bold uppercase tracking-wider select-none text-zinc-600">
@@ -336,40 +336,42 @@ export default function ReportViewer({ report, onBack, onDelete }: ReportViewerP
 
       {/* Universal Friction Intersections (Elevated to High Priority) */}
       {report.universalComplaints && report.universalComplaints.length > 0 && (
-        <div className="p-5 border border-rose-200 bg-rose-50/10 rounded-3xl space-y-4">
-          <div className="space-y-1">
-            <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-rose-600 font-extrabold flex items-center gap-1.5">
+        <div className="p-3.5 border border-rose-200/60 bg-rose-50/10 rounded-2xl space-y-3 shadow-xs">
+          <div className="space-y-0.5">
+            <span className="font-mono text-[7.5px] uppercase tracking-[0.2em] text-rose-600 font-black flex items-center gap-1 select-none">
               <AlertCircle className="h-3 w-3" /> UNIVERSAL CHURN TRIGGERS
             </span>
-            <h3 className="font-sans font-black text-zinc-900 text-xs tracking-tight uppercase leading-none">
+            <h3 className="font-sans font-black text-zinc-900 text-[11px] tracking-tight uppercase leading-none mt-0.5">
               Overlapping Stress Nodes ({report.universalComplaints.length}) — Core Fix Priorities
             </h3>
-            <p className="text-zinc-550 text-[10.5px] font-sans mt-1 leading-normal">
-              These elements triggered critical friction thresholds across 3 or more distinct simulated user personas simultaneously. Addressing these satisfies multiple audience types simultaneously.
+            <p className="text-zinc-500 text-[10px] font-sans mt-1 leading-normal">
+              These elements triggered critical friction thresholds across 3 or more distinct simulated user personas simultaneously.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
             {report.universalComplaints.map((complaint, index) => (
-              <div key={index} className="bg-white/50 border border-rose-150/40 p-4 rounded-2xl flex flex-col justify-between space-y-3">
+              <div key={index} className="bg-white/40 border border-rose-100/40 p-3 rounded-xl flex flex-col justify-between gap-2.5">
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2">
                     <span className="bg-rose-600 text-white font-mono text-[7px] font-black w-4.5 h-4.5 rounded-full flex items-center justify-center shrink-0">
                       U{index + 1}
                     </span>
-                    <h4 className="font-mono text-[9.5px] font-black text-zinc-800 bg-zinc-100 border border-zinc-200 px-1.5 py-0.5 rounded truncate max-w-full">
+                    <h4 className="font-mono text-[8.5px] font-black text-zinc-850 bg-zinc-100 border border-zinc-200/80 px-1.5 py-0.5 rounded truncate max-w-full">
                       {complaint.element}
                     </h4>
                   </div>
-                  <p className="font-sans text-[11px] text-zinc-650 leading-relaxed">
-                    <strong>Multi-Persona Friction Context:</strong> {complaint.reason}
+                  <p className="font-sans text-[10.5px] text-zinc-600 leading-relaxed">
+                    <strong>Context:</strong> {complaint.reason}
                   </p>
                 </div>
-                <div className="bg-[#0f1013] text-zinc-350 p-2.5 rounded-xl border border-zinc-800 w-full overflow-x-auto text-[9.5px] font-mono leading-normal select-text">
-                  <span className="block text-amber-400 font-extrabold text-[7.5px] font-mono tracking-widest uppercase mb-1">
+                <div className="bg-[#0b0c0e] text-zinc-300 p-2 rounded-lg border border-zinc-900/60 w-full overflow-x-auto text-[8.5px] font-mono leading-tight select-text mt-1.5 shadow-inner">
+                  <span className="block text-amber-500 font-extrabold text-[6.5px] font-mono tracking-widest uppercase mb-0.5 select-none">
                     Unified Code replacement:
                   </span>
-                  {complaint.solution}
+                  <pre className="whitespace-pre-wrap font-mono text-zinc-300 text-[8.5px] leading-normal max-h-28 overflow-y-auto break-all select-all pt-0.5 font-medium">
+                    <code>{complaint.solution || "/* Dynamic code generation in progress... please trigger a fresh audit scan. */"}</code>
+                  </pre>
                 </div>
               </div>
             ))}
@@ -382,7 +384,7 @@ export default function ReportViewer({ report, onBack, onDelete }: ReportViewerP
         <div>
           <h3 className="font-sans font-black text-xs text-zinc-900 tracking-tight flex items-center gap-1.5 leading-none">
             <Wrench className="h-3.5 w-3.5 text-zinc-700" />
-            Recommended UI Upgrades ({report.fixes.length})
+            Recommended UI Upgrades ({(report.fixes || []).length})
           </h3>
           <p className="text-[10px] text-zinc-500 mt-1 font-sans font-normal leading-normal">
             Targeted layout and visual adjustments calculated to optimize reading pathways and minimize conversion friction.
@@ -391,7 +393,7 @@ export default function ReportViewer({ report, onBack, onDelete }: ReportViewerP
 
         {/* Actionable fixes lists */}
         <div className="space-y-2">
-          {report.fixes.map((fix, index) => {
+          {(report.fixes || []).map((fix, index) => {
             const isCompleted = !!completedFixes[index];
             return (
               <div 
