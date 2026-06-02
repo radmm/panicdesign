@@ -75,14 +75,41 @@ You are a highly sophisticated, objective, and supportive Lead Fullstack UX Audi
 3. Technical vocabulary and intuitive copywriting (translating complex system error stack traces, unhelpful codes, and database acronyms into direct, standard human labels).
 4. Guardrails and rollback pipelines (preventing user mistakes, state preservation upon validation reload, micro-action backtracks).
 
-Audit this UI from the perspectives of three simulated, distinct user personas. For each persona's report, you MUST provide highly detailed, realistic, and developer-centric diagnostic feedback.
+Before generating any persona output, you MUST perform a silent structural scan of the provided screenshot or URL context:
+- Identify every interactive element — buttons, forms, links, dropdowns, modals
+- Identify the primary CTA and whether it is visually dominant
+- Identify the information hierarchy — what the eye lands on first, second, third
+- Detect visual noise — how many competing elements exist above the fold
+- Detect trust signals or absence of them — pricing visibility, social proof, security badges
+- Detect ambiguous labels — any button or link whose action is not 100% clear from its text alone
+- Map the entire UI into 3 to 6 named layout zones — each zone gets a label that all personas reference consistently in their feedback reports (e.g., "primary_cta_area", "form_body_wrapper", "sidebar_controls_box").
 
-Formatting directives for the output data:
-- Persona "quotes" must run as specific, realistic user thought processes representing interactive confusion on specific page nodes seen (e.g., "Wait, does this 'POST_ACTION_DB' key dispatch a request immediately? How do I rollback? There is no focus-ring, so I can't keep track of keyboard tab positions!").
-- Do NOT provide vague, boilerplate, or placeholder feedback. Give highly specific, technical "straight-up answers" of EXACTLY what components, selectors, buttons, input bars, or containers need to be modified in the HTML/CSS/React codebase.
-- In 'frictionPoints', list actual simulated hotspots with exact 'element' IDs/tags (e.g., "div.flex-container > form > button#submit", "input[type='tel']", "header nav.sticky") and concrete 'panicTrigger' descriptions utilizing professional developer, designer, and web-performance keywords (e.g., "lack of focus-visible rings causing keyboard traps", "touch-targets failing the 44px minimum tap size criteria", "cumulative layout shift (CLS) hazards during async content fetch", "contrast ratio failing WCAG 2.1 levels under light grey backgrounds", "z-index stacking overlap covering dropdown popovers", "missing debounce timeouts on active autocomplete search bars", "insufficient whitespace padding leading to element overlapping").
-- The 'biggestRisk' must state a clear, definitive technical reason (e.g., "The absence of client-side localState preservation during image loading triggers rapid form clearing upon retry, leading to immediate database-churn and total walkthrough failure").
-- The general 'fixes' array must comprise actual, highly detailed, and pragmatic code-level suggestions (e.g., "Replace inline flex inline-block with flex-row flex-wrap md:flex-nowrap and apply a gap-4 separator", "Implement standard pointer-events-none classes on decorative icons to avoid event bubbling traps", "Integrate focus-trap-react inside modal overlays to capture Tab keyboard flows").`;
+Now, audit this UI from the perspectives of five simulated, distinct user personas. For each persona's report, you MUST provide highly detailed, realistic, and developer-centric diagnostic feedback.
+
+Persona specifications:
+1. Anxious User: Genuinely afraid of making a mistake online. Monologue is raw stream of consciousness, slightly catastrophizing. Finds every unclear label, irreversible action, missing confirmation, or unexplained input. Every complaint ends with exactly what microcopy, safe backtrack, or layout design would have calmed them down.
+2. Distracted User: Gave this page 3 seconds of attention before eyes glazed over. Bored, fast, dismissive monologue. Identifies if the landing value proposition is instant, checks if primary CTA is immediately findable, complains about elements needing too much reading. Every complaint ends with what specific visual cue/resize would have held their attention.
+3. First Timer: No industry jargon understood, no category knowledge. Curiosity but confusion. Identifies jargon terms, assumptions of context, and missing onboarding steps. Every complaint ends with the one-sentence orientation text that would have saved them.
+4. Impatient Mobile User: On a phone, one-handed, bad connection, standing in line. Terse, frustrated monologue. Evaluates tap target sizes (WCAG 44px min), scrolling fatigue, design density, hover traps. Every complaint ends with the single clean layout adjustment to satisfy the mobile viewport.
+5. Skeptic: Thinks everything is a trick. Finds dark patterns, hidden costs, vague promises, unverified proof, and excessive data grabs. Sardonic, dry monologue. Every complaint ends with the exact design signal that would have earned a fraction of their trust.
+
+How statistics are calculated:
+- Friction Points Count: Specific count of interactive elements flagged as problems (weighted by severity).
+- Drop-off Probability: Calculated as the realistic, derived chance (0-100%) this persona abandons before completion.
+- Trust Rating (0-100%): Anchored to specific visual trust evidence or lack thereof in the screenshot.
+- Score: Overall stress/friction level.
+- Panic Score: Adjusted average of all five drop-offs.
+
+UNIVERSAL COMPLAINTS ALGORITHM:
+Perform a secondary pass. Any element flagged by three or more personas MUST be elevated to a Universal Complaint, listing why multiple users hit the wall, and providing a single concrete replacement code/spec.
+
+FIX GENERATOR BEHAVIOR:
+Provide explicit replacement code or exact microcopy text instead of generic suggestions.
+
+Panic Certificate Logic:
+- Above 80: "Panic-Proof" verdict (confident, specific praise).
+- Between 40 and 80: "Work In Progress" verdict (highlights top 2-3 modifications).
+- Below 40: "Crime Scene" verdict (senior designer direct constructive review).`;
 
     contents.push({ text: promptText });
 
@@ -96,7 +123,7 @@ Formatting directives for the output data:
         },
         globalPanicScore: {
           type: Type.INTEGER,
-          description: "Global cognitive stress and interaction friction score from 0 (perfect clarity) to 100 (high friction)."
+          description: "Global cognitive stress score representing friction/abandonment from 0 (perfect clarity) to 100 (high friction)."
         },
         brutalSummary: {
           type: Type.STRING,
@@ -110,6 +137,11 @@ Formatting directives for the output data:
           type: Type.STRING,
           description: "A detailed and helpful critique of the fonts, container margins, focus areas, and button pacing."
         },
+        namedUIZones: {
+          type: Type.ARRAY,
+          items: { type: Type.STRING },
+          description: "Labels of mapped UI areas from the silient structural scan."
+        },
         personas: {
           type: Type.OBJECT,
           properties: {
@@ -117,33 +149,40 @@ Formatting directives for the output data:
               type: Type.OBJECT,
               properties: {
                 personaName: { type: Type.STRING },
-                score: { type: Type.INTEGER, description: "Stress level from 0 to 100." },
-                quote: { type: Type.STRING, description: "A highly defensive inner monologue. (e.g., 'If I drop a file here, does it automatically post it public? Wait, where is the cancel button?!')" },
-                biggestRisk: { type: Type.STRING, description: "The single biggest hazard causing this user to cancel/flee." },
-                cognitiveLoad: { type: Type.STRING, description: "Cognitive Load description: High, Medium, or Low" },
+                score: { type: Type.INTEGER },
+                frictionPointsCount: { type: Type.INTEGER },
+                dropOffProbability: { type: Type.INTEGER },
+                trustRating: { type: Type.INTEGER },
+                quote: { type: Type.STRING },
+                biggestRisk: { type: Type.STRING },
+                cognitiveLoad: { type: Type.STRING },
                 frictionPoints: {
                   type: Type.ARRAY,
                   items: {
                     type: Type.OBJECT,
                     properties: {
-                      element: { type: Type.STRING, description: "Specific button, form input, small text, badge, or container." },
-                      locationDescription: { type: Type.STRING, description: "Where it sits on the screen to help locate it." },
-                      panicTrigger: { type: Type.STRING, description: "Why it triggers panic, worry, or loss of control." },
-                      severity: { type: Type.STRING, description: "Severity: high, medium, or low" }
+                      element: { type: Type.STRING },
+                      locationDescription: { type: Type.STRING },
+                      panicTrigger: { type: Type.STRING },
+                      severity: { type: Type.STRING },
+                      namedZone: { type: Type.STRING }
                     },
-                    required: ["element", "locationDescription", "panicTrigger", "severity"]
+                    required: ["element", "locationDescription", "panicTrigger", "severity", "namedZone"]
                   }
                 }
               },
-              required: ["personaName", "score", "quote", "biggestRisk", "cognitiveLoad", "frictionPoints"]
+              required: ["personaName", "score", "frictionPointsCount", "dropOffProbability", "trustRating", "quote", "biggestRisk", "cognitiveLoad", "frictionPoints"]
             },
             distracted: {
               type: Type.OBJECT,
               properties: {
                 personaName: { type: Type.STRING },
-                score: { type: Type.INTEGER, description: "Confusion/attention drift level from 0 to 100." },
-                quote: { type: Type.STRING, description: "A chaotic inner monologue showing how they ignore features. (e.g., 'Oh look, a yellow border... wait, what was I supposed to drop? Ah, I'll just check Slack...')" },
-                biggestRisk: { type: Type.STRING, description: "What primary flow element is so tiny or hidden they will overlook it entirely." },
+                score: { type: Type.INTEGER },
+                frictionPointsCount: { type: Type.INTEGER },
+                dropOffProbability: { type: Type.INTEGER },
+                trustRating: { type: Type.INTEGER },
+                quote: { type: Type.STRING },
+                biggestRisk: { type: Type.STRING },
                 cognitiveLoad: { type: Type.STRING },
                 frictionPoints: {
                   type: Type.ARRAY,
@@ -152,22 +191,26 @@ Formatting directives for the output data:
                     properties: {
                       element: { type: Type.STRING },
                       locationDescription: { type: Type.STRING },
-                      panicTrigger: { type: Type.STRING, description: "Why their attention skips over this entirely." },
-                      severity: { type: Type.STRING }
+                      panicTrigger: { type: Type.STRING },
+                      severity: { type: Type.STRING },
+                      namedZone: { type: Type.STRING }
                     },
-                    required: ["element", "locationDescription", "panicTrigger", "severity"]
+                    required: ["element", "locationDescription", "panicTrigger", "severity", "namedZone"]
                   }
                 }
               },
-              required: ["personaName", "score", "quote", "biggestRisk", "cognitiveLoad", "frictionPoints"]
+              required: ["personaName", "score", "frictionPointsCount", "dropOffProbability", "trustRating", "quote", "biggestRisk", "cognitiveLoad", "frictionPoints"]
             },
             firstTime: {
               type: Type.OBJECT,
               properties: {
                 personaName: { type: Type.STRING },
-                score: { type: Type.INTEGER, description: "Alienation and jargon barrier rating from 0 to 100." },
-                quote: { type: Type.STRING, description: "Clueless dialogue. (e.g., 'Wait, is this index for videos or index files? Why does it talk about Pegasus? Who's Pegasus?')" },
-                biggestRisk: { type: Type.STRING, description: "The single largest jargon barrier or missing step." },
+                score: { type: Type.INTEGER },
+                frictionPointsCount: { type: Type.INTEGER },
+                dropOffProbability: { type: Type.INTEGER },
+                trustRating: { type: Type.INTEGER },
+                quote: { type: Type.STRING },
+                biggestRisk: { type: Type.STRING },
                 cognitiveLoad: { type: Type.STRING },
                 frictionPoints: {
                   type: Type.ARRAY,
@@ -176,25 +219,102 @@ Formatting directives for the output data:
                     properties: {
                       element: { type: Type.STRING },
                       locationDescription: { type: Type.STRING },
-                      panicTrigger: { type: Type.STRING, description: "How internal product slang or complex names make them feel stupid." },
-                      severity: { type: Type.STRING }
+                      panicTrigger: { type: Type.STRING },
+                      severity: { type: Type.STRING },
+                      namedZone: { type: Type.STRING }
                     },
-                    required: ["element", "locationDescription", "panicTrigger", "severity"]
+                    required: ["element", "locationDescription", "panicTrigger", "severity", "namedZone"]
                   }
                 }
               },
-              required: ["personaName", "score", "quote", "biggestRisk", "cognitiveLoad", "frictionPoints"]
+              required: ["personaName", "score", "frictionPointsCount", "dropOffProbability", "trustRating", "quote", "biggestRisk", "cognitiveLoad", "frictionPoints"]
+            },
+            impatientMobile: {
+              type: Type.OBJECT,
+              properties: {
+                personaName: { type: Type.STRING },
+                score: { type: Type.INTEGER },
+                frictionPointsCount: { type: Type.INTEGER },
+                dropOffProbability: { type: Type.INTEGER },
+                trustRating: { type: Type.INTEGER },
+                quote: { type: Type.STRING },
+                biggestRisk: { type: Type.STRING },
+                cognitiveLoad: { type: Type.STRING },
+                frictionPoints: {
+                  type: Type.ARRAY,
+                  items: {
+                    type: Type.OBJECT,
+                    properties: {
+                      element: { type: Type.STRING },
+                      locationDescription: { type: Type.STRING },
+                      panicTrigger: { type: Type.STRING },
+                      severity: { type: Type.STRING },
+                      namedZone: { type: Type.STRING }
+                    },
+                    required: ["element", "locationDescription", "panicTrigger", "severity", "namedZone"]
+                  }
+                }
+              },
+              required: ["personaName", "score", "frictionPointsCount", "dropOffProbability", "trustRating", "quote", "biggestRisk", "cognitiveLoad", "frictionPoints"]
+            },
+            skeptic: {
+              type: Type.OBJECT,
+              properties: {
+                personaName: { type: Type.STRING },
+                score: { type: Type.INTEGER },
+                frictionPointsCount: { type: Type.INTEGER },
+                dropOffProbability: { type: Type.INTEGER },
+                trustRating: { type: Type.INTEGER },
+                quote: { type: Type.STRING },
+                biggestRisk: { type: Type.STRING },
+                cognitiveLoad: { type: Type.STRING },
+                frictionPoints: {
+                  type: Type.ARRAY,
+                  items: {
+                    type: Type.OBJECT,
+                    properties: {
+                      element: { type: Type.STRING },
+                      locationDescription: { type: Type.STRING },
+                      panicTrigger: { type: Type.STRING },
+                      severity: { type: Type.STRING },
+                      namedZone: { type: Type.STRING }
+                    },
+                    required: ["element", "locationDescription", "panicTrigger", "severity", "namedZone"]
+                  }
+                }
+              },
+              required: ["personaName", "score", "frictionPointsCount", "dropOffProbability", "trustRating", "quote", "biggestRisk", "cognitiveLoad", "frictionPoints"]
             }
           },
-          required: ["anxious", "distracted", "firstTime"]
+          required: ["anxious", "distracted", "firstTime", "impatientMobile", "skeptic"]
+        },
+        universalComplaints: {
+          type: Type.ARRAY,
+          items: {
+            type: Type.OBJECT,
+            properties: {
+              element: { type: Type.STRING },
+              reason: { type: Type.STRING },
+              solution: { type: Type.STRING }
+            },
+            required: ["element", "reason", "solution"]
+          }
+        },
+        panicCertificate: {
+          type: Type.OBJECT,
+          properties: {
+            verdict: { type: Type.STRING, description: "Exactly 'Panic-Proof', 'Work In Progress', or 'Crime Scene'." },
+            text: { type: Type.STRING }
+          },
+          required: ["verdict", "text"]
         },
         fixes: {
           type: Type.ARRAY,
           items: {
             type: Type.OBJECT,
             properties: {
-              issue: { type: Type.STRING, description: "A high-friction element found which stresses Stressed users." },
-              recommendation: { type: Type.STRING, description: "Straightforward, highly actionable design solution." },
+              issue: { type: Type.STRING, description: "A high-friction element found." },
+              recommendation: { type: Type.STRING, description: "Exact replacement codebase text/microcopy change." },
               difficulty: { type: Type.STRING, description: "Easy, Medium, or Hard" },
               impact: { type: Type.STRING, description: "Critical, Highly Beneficial, or Nice-to-Have" }
             },
@@ -208,7 +328,10 @@ Formatting directives for the output data:
         "brutalSummary",
         "visualAestheticRating",
         "aestheticCritique",
+        "namedUIZones",
         "personas",
+        "universalComplaints",
+        "panicCertificate",
         "fixes"
       ]
     };

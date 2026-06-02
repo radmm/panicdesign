@@ -12,7 +12,10 @@ import {
   Wrench,
   AlertOctagon,
   Copy,
-  Printer
+  Printer,
+  Award,
+  Fingerprint,
+  AlertCircle
 } from "lucide-react";
 import { StressTestReport, ActionableFix } from "../types";
 import PersonaDetail from "./PersonaDetail";
@@ -187,6 +190,51 @@ export default function ReportViewer({ report, onBack, onDelete }: ReportViewerP
         </div>
       </div>
 
+      {/* Panic Certificate Official Verdict Badge */}
+      {report.panicCertificate && (
+        <div className={`p-5 rounded-[24px] border border-dashed flex flex-col md:flex-row items-center justify-between gap-4 backdrop-blur-md relative ${
+          report.panicCertificate.verdict === "Panic-Proof" 
+            ? "border-emerald-300 bg-emerald-50/10 text-emerald-800" 
+            : report.panicCertificate.verdict === "Work In Progress"
+            ? "border-amber-300 bg-amber-50/10 text-amber-800"
+            : "border-rose-300 bg-rose-50/10 text-rose-800"
+        }`}>
+          <div className="flex items-start gap-4">
+            <div className={`h-11 w-11 rounded-full flex items-center justify-center shrink-0 border shadow-xs ${
+              report.panicCertificate.verdict === "Panic-Proof" 
+                ? "bg-emerald-100 border-emerald-250 text-emerald-600" 
+                : report.panicCertificate.verdict === "Work In Progress"
+                ? "bg-amber-100 border-amber-250 text-amber-600"
+                : "bg-rose-100 border-rose-250 text-rose-600"
+            }`}>
+              <Award className="h-5.5 w-5.5" />
+            </div>
+            <div className="space-y-1">
+              <span className="font-mono text-[8px] uppercase tracking-[0.2em] opacity-80 font-bold block">
+                OFFICIAL DESIGN AUDIT CERTIFICATE
+              </span>
+              <h3 className="font-sans font-black text-xs tracking-tight text-zinc-900 uppercase">
+                VERDICT: {report.panicCertificate.verdict}
+              </h3>
+              <p className="font-sans text-[11.5px] text-zinc-700 leading-relaxed max-w-3xl font-medium">
+                {report.panicCertificate.text}
+              </p>
+            </div>
+          </div>
+          <div className="shrink-0 select-none hidden md:block">
+            <span className={`inline-block border font-mono text-[8.5px] uppercase font-black tracking-widest px-3 py-1 rounded-[10px] transform rotate-3 ${
+              report.panicCertificate.verdict === "Panic-Proof"
+                ? "border-emerald-500 text-emerald-600"
+                : report.panicCertificate.verdict === "Work In Progress"
+                ? "border-amber-500 text-amber-600"
+                : "border-rose-500 text-rose-600"
+            }`}>
+              VERIFIED COMPLIANCE
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* Two Column Section: Aesthetic Critique & Screenshot Preview */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* Screenshot View if uploaded */}
@@ -255,8 +303,79 @@ export default function ReportViewer({ report, onBack, onDelete }: ReportViewerP
         </div>
       </div>
 
+      {/* Silent Structural Scan Mapped Zones */}
+      {report.namedUIZones && report.namedUIZones.length > 0 && (
+        <div className="glass-premium rounded-[20px] p-4.5 space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-200/50 pb-2">
+            <div className="flex items-center gap-2">
+              <Fingerprint className="h-4 w-4 text-zinc-800" />
+              <h3 className="font-sans font-black text-xs text-zinc-950 tracking-tight leading-none uppercase">
+                Silent UI Structural Scan Map
+              </h3>
+            </div>
+            <span className="font-mono text-[7px] bg-[#0d0e11] text-amber-400 px-1.5 py-0.5 rounded font-bold tracking-widest">
+              SCAN INDEXING COMPLETED
+            </span>
+          </div>
+          <p className="text-[10.5px] text-zinc-550 leading-normal font-sans">
+            Our background visual parser completed an isolated boundaries segment scan of your interface structure prior to stress simulation. Detected active layout regions:
+          </p>
+          <div className="flex flex-wrap gap-2 pt-1 font-mono text-[7.5px] font-bold uppercase tracking-wider select-none text-zinc-600">
+            {report.namedUIZones.map((zone, idx) => (
+              <span key={idx} className="bg-zinc-100/60 border border-zinc-200 px-2.5 py-1 rounded-xl flex items-center gap-1.5">
+                <span className="h-1.5 w-1.5 bg-indigo-500 rounded-full animate-pulse" />
+                <span>ZONE_{idx + 1}: {zone}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Embedded Client Persona Simulations Component */}
       <PersonaDetail personas={report.personas} />
+
+      {/* Universal Friction Intersections (Elevated to High Priority) */}
+      {report.universalComplaints && report.universalComplaints.length > 0 && (
+        <div className="p-5 border border-rose-200 bg-rose-50/10 rounded-3xl space-y-4">
+          <div className="space-y-1">
+            <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-rose-600 font-extrabold flex items-center gap-1.5">
+              <AlertCircle className="h-3 w-3" /> UNIVERSAL CHURN TRIGGERS
+            </span>
+            <h3 className="font-sans font-black text-zinc-900 text-xs tracking-tight uppercase leading-none">
+              Overlapping Stress Nodes ({report.universalComplaints.length}) — Core Fix Priorities
+            </h3>
+            <p className="text-zinc-550 text-[10.5px] font-sans mt-1 leading-normal">
+              These elements triggered critical friction thresholds across 3 or more distinct simulated user personas simultaneously. Addressing these satisfies multiple audience types simultaneously.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {report.universalComplaints.map((complaint, index) => (
+              <div key={index} className="bg-white/50 border border-rose-150/40 p-4 rounded-2xl flex flex-col justify-between space-y-3">
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-2">
+                    <span className="bg-rose-600 text-white font-mono text-[7px] font-black w-4.5 h-4.5 rounded-full flex items-center justify-center shrink-0">
+                      U{index + 1}
+                    </span>
+                    <h4 className="font-mono text-[9.5px] font-black text-zinc-800 bg-zinc-100 border border-zinc-200 px-1.5 py-0.5 rounded truncate max-w-full">
+                      {complaint.element}
+                    </h4>
+                  </div>
+                  <p className="font-sans text-[11px] text-zinc-650 leading-relaxed">
+                    <strong>Multi-Persona Friction Context:</strong> {complaint.reason}
+                  </p>
+                </div>
+                <div className="bg-[#0f1013] text-zinc-350 p-2.5 rounded-xl border border-zinc-800 w-full overflow-x-auto text-[9.5px] font-mono leading-normal select-text">
+                  <span className="block text-amber-400 font-extrabold text-[7.5px] font-mono tracking-widest uppercase mb-1">
+                    Unified Code replacement:
+                  </span>
+                  {complaint.solution}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Actionable Code Fixes & Layout Adjustments */}
       <div className="glass-premium rounded-[20px] p-4.5 space-y-3.5">
