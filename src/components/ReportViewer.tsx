@@ -266,7 +266,7 @@ export default function ReportViewer({ report, onBack, onDelete }: ReportViewerP
         <div className={`p-5 rounded-[24px] border border-dashed flex flex-col md:flex-row items-center justify-between gap-4 backdrop-blur-md relative ${
           report.panicCertificate.verdict === "Panic-Proof" 
             ? "border-emerald-300 bg-emerald-50/10 text-emerald-800" 
-            : report.panicCertificate.verdict === "Work In Progress"
+            : report.panicCertificate.verdict === "Chaos-Proof"
             ? "border-amber-300 bg-amber-50/10 text-amber-800"
             : "border-rose-300 bg-rose-50/10 text-rose-800"
         }`}>
@@ -274,7 +274,7 @@ export default function ReportViewer({ report, onBack, onDelete }: ReportViewerP
             <div className={`h-11 w-11 rounded-full flex items-center justify-center shrink-0 border shadow-xs ${
               report.panicCertificate.verdict === "Panic-Proof" 
                 ? "bg-emerald-100 border-emerald-250 text-emerald-600" 
-                : report.panicCertificate.verdict === "Work In Progress"
+                : report.panicCertificate.verdict === "Chaos-Proof"
                 ? "bg-amber-100 border-amber-250 text-amber-600"
                 : "bg-rose-100 border-rose-250 text-rose-600"
             }`}>
@@ -296,7 +296,7 @@ export default function ReportViewer({ report, onBack, onDelete }: ReportViewerP
             <span className={`inline-block border font-mono text-[8.5px] uppercase font-black tracking-widest px-3 py-1 rounded-[10px] transform rotate-3 ${
               report.panicCertificate.verdict === "Panic-Proof"
                 ? "border-emerald-500 text-emerald-600"
-                : report.panicCertificate.verdict === "Work In Progress"
+                : report.panicCertificate.verdict === "Chaos-Proof"
                 ? "border-amber-500 text-amber-600"
                 : "border-rose-500 text-rose-600"
             }`}>

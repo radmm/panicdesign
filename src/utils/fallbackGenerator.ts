@@ -79,22 +79,22 @@ export function generateFallbackReport(url: string | undefined, originalFileName
   const globalPanicScore = 32 + (seed % 60);
 
   // Setup verdicts based on scores
-  let verdict: "Panic-Proof" | "Work In Progress" | "Crime Scene" = "Work In Progress";
+  let verdict: "Panic-Proof" | "Chaos-Proof" | "Crime Scene" = "Chaos-Proof";
   let verdictText = "";
   let visualAestheticRating = "";
   let aestheticCritique = "";
   let namedUIZones: string[] = [];
 
-  if (globalPanicScore < 45) {
+  if (globalPanicScore < 35) {
     verdict = "Panic-Proof";
     visualAestheticRating = `${(8.6 + (seed % 10) / 10).toFixed(1)}/10 — Exceptional Cognitive Clarity`;
     namedUIZones = ["navigation_header_rail", "hero_focus_pane", "actionable_trigger_group", "footer_trust_strip"];
-  } else if (globalPanicScore >= 75) {
+  } else if (globalPanicScore >= 65) {
     verdict = "Crime Scene";
     visualAestheticRating = `${(3.5 + (seed % 12) / 10).toFixed(1)}/10 — Heavy Cognitive Congestion`;
     namedUIZones = ["navigation_dock_sticky", "layout_form_container", "options_sidebar_drawer", "cta_trigger_wrapper", "promotional_badge_row"];
   } else {
-    verdict = "Work In Progress";
+    verdict = "Chaos-Proof";
     visualAestheticRating = `${(6.6 + (seed % 10) / 10).toFixed(1)}/10 — Balanced Structural Layout`;
     namedUIZones = ["header_control_dock", "primary_form_wrapper", "actions_button_container", "sidebar_metadata_box", "footer_attribution_strip"];
   }

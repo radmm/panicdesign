@@ -124,24 +124,24 @@ function generateServerFallbackReport(url?: string, screenshotBase64?: string): 
   const globalPanicScore = 32 + (seed % 60);
 
   // Setup verdicts based on scores
-  let verdict: "Panic-Proof" | "Work In Progress" | "Crime Scene" = "Work In Progress";
+  let verdict: "Panic-Proof" | "Chaos-Proof" | "Crime Scene" = "Chaos-Proof";
   let verdictTextTemplate = "";
   let visualAestheticRating = "";
   let aestheticCritique = "";
   let namedUIZones: string[] = [];
 
-  if (globalPanicScore < 45) {
+  if (globalPanicScore < 35) {
     verdict = "Panic-Proof";
     visualAestheticRating = `${(8.6 + (seed % 10) / 10).toFixed(1)}/10 — Exceptional Cognitive Clarity`;
     namedUIZones = ["navigation_header_rail", "hero_focus_pane", "actionable_trigger_group", "footer_trust_strip"];
     verdictTextTemplate = `The parsed visual hierarchy exhibits outstanding compliance metrics! ${formattedName} maintains generous container gutters, clear typography scales, and highly responsive focus guidelines. It guarantees a soothing, zero-friction experience for both analytical skeptics and rapid mobile operators.`;
-  } else if (globalPanicScore >= 75) {
+  } else if (globalPanicScore >= 65) {
     verdict = "Crime Scene";
     visualAestheticRating = `${(3.5 + (seed % 12) / 10).toFixed(1)}/10 — Heavy Cognitive Congestion`;
     namedUIZones = ["navigation_dock_sticky", "layout_form_container", "options_sidebar_drawer", "cta_trigger_wrapper", "promotional_badge_row"];
     verdictTextTemplate = `Critical usability alert: ${formattedName} displays a severely congested interaction grid. Highly anxious visitors will experience elevated confusion, while mobile viewports struggle with miniature button borders. Immediate structural spacing enlargement is strongly required to restore operational pathways.`;
   } else {
-    verdict = "Work In Progress";
+    verdict = "Chaos-Proof";
     visualAestheticRating = `${(6.6 + (seed % 10) / 10).toFixed(1)}/10 — Balanced Structural Layout`;
     namedUIZones = ["header_control_dock", "primary_form_wrapper", "actions_button_container", "sidebar_metadata_box", "footer_attribution_strip"];
     verdictTextTemplate = `A secure and functional foundation in ${formattedName} is slightly limited by compressed label distances and confusing industry terminology. Aligning helper badges, increasing target depths, and softening copywriting terms will easily elevate conversion rates soon.`;
@@ -944,8 +944,8 @@ Provide explicit replacement code or exact microcopy text instead of generic sug
 
 Panic Certificate Logic:
 - Under 35 score: "Panic-Proof" verdict (minimal friction, flawless clarity, high trust. Confident, specific praise).
-- Between 35 and 74 score: "Work In Progress" verdict (some friction, highlights top 2-3 modifications).
-- 75 and above score: "Crime Scene" verdict (critical layout errors, massive dropoffs, extremely high friction. Senior designer direct constructive review).
+- Between 35 and 64 score: "Chaos-Proof" verdict (some friction but stable, highlights top 2-3 modifications).
+- 65 and above score: "Crime Scene" verdict (critical layout errors, massive dropoffs, extremely high friction. Senior designer direct constructive review).
 
 CRITICAL COPYWRITING DIRECTIVE (ANTI-CLICHÉ GUARDRAIL):
 - You MUST NOT under any circumstance use repetitive boilerplate sentences.
@@ -1161,7 +1161,7 @@ CRITICAL SECURITY AND SAFETY GUARDRAILS:
         panicCertificate: {
           type: Type.OBJECT,
           properties: {
-            verdict: { type: Type.STRING, description: "Exactly 'Panic-Proof', 'Work In Progress', or 'Crime Scene'." },
+            verdict: { type: Type.STRING, description: "Exactly 'Panic-Proof', 'Chaos-Proof', or 'Crime Scene'." },
             text: { type: Type.STRING }
           },
           required: ["verdict", "text"]
