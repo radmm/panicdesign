@@ -32,7 +32,7 @@ export interface UniversalComplaint {
 }
 
 export interface PanicCertificate {
-  verdict: "Panic-Proof" | "Chaos-Proof" | "Crime Scene";
+  verdict: "Panic-Proof" | "Steady" | "Work In Progress" | "Stress Fractures" | "Crime Scene";
   text: string; // senior designer style detailed verdict text
 }
 

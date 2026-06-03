@@ -79,24 +79,32 @@ export function generateFallbackReport(url: string | undefined, originalFileName
   const globalPanicScore = 32 + (seed % 60);
 
   // Setup verdicts based on scores
-  let verdict: "Panic-Proof" | "Chaos-Proof" | "Crime Scene" = "Chaos-Proof";
+  let verdict: "Panic-Proof" | "Steady" | "Work In Progress" | "Stress Fractures" | "Crime Scene" = "Work In Progress";
   let verdictText = "";
   let visualAestheticRating = "";
   let aestheticCritique = "";
   let namedUIZones: string[] = [];
 
-  if (globalPanicScore < 35) {
+  if (globalPanicScore <= 25) {
     verdict = "Panic-Proof";
-    visualAestheticRating = `${(8.6 + (seed % 10) / 10).toFixed(1)}/10 — Exceptional Cognitive Clarity`;
+    visualAestheticRating = `${(8.8 + (seed % 10) / 10).toFixed(1)}/10 — Exceptional Cognitive Clarity`;
     namedUIZones = ["navigation_header_rail", "hero_focus_pane", "actionable_trigger_group", "footer_trust_strip"];
-  } else if (globalPanicScore >= 65) {
-    verdict = "Crime Scene";
-    visualAestheticRating = `${(3.5 + (seed % 12) / 10).toFixed(1)}/10 — Heavy Cognitive Congestion`;
-    namedUIZones = ["navigation_dock_sticky", "layout_form_container", "options_sidebar_drawer", "cta_trigger_wrapper", "promotional_badge_row"];
-  } else {
-    verdict = "Chaos-Proof";
-    visualAestheticRating = `${(6.6 + (seed % 10) / 10).toFixed(1)}/10 — Balanced Structural Layout`;
+  } else if (globalPanicScore <= 45) {
+    verdict = "Steady";
+    visualAestheticRating = `${(7.8 + (seed % 10) / 10).toFixed(1)}/10 — Low-Friction Flow`;
+    namedUIZones = ["navigation_header_rail", "primary_form_wrapper", "actionable_trigger_group"];
+  } else if (globalPanicScore <= 65) {
+    verdict = "Work In Progress";
+    visualAestheticRating = `${(6.4 + (seed % 10) / 10).toFixed(1)}/10 — Balanced Structural Layout`;
     namedUIZones = ["header_control_dock", "primary_form_wrapper", "actions_button_container", "sidebar_metadata_box", "footer_attribution_strip"];
+  } else if (globalPanicScore <= 82) {
+    verdict = "Stress Fractures";
+    visualAestheticRating = `${(4.8 + (seed % 10) / 10).toFixed(1)}/10 — High Interpretive strain`;
+    namedUIZones = ["navigation_dock_sticky", "options_sidebar_drawer", "cta_trigger_wrapper", "promotional_badge_row"];
+  } else {
+    verdict = "Crime Scene";
+    visualAestheticRating = `${(3.2 + (seed % 12) / 10).toFixed(1)}/10 — Heavy Cognitive Congestion`;
+    namedUIZones = ["navigation_dock_sticky", "layout_form_container", "options_sidebar_drawer", "cta_trigger_wrapper", "promotional_badge_row"];
   }
 
   // Setup category details
@@ -531,9 +539,9 @@ export function generateFallbackReport(url: string | undefined, originalFileName
       ? `The reading layout for ${targetName} maintains stellar column proportions. High-contrast, clean fonts allow rapid readers to focus, preserving cognitive energy.`
       : globalPanicScore >= 75
       ? `The content feed is a visual crime scene. With sticky ads, infinite video overlays, complex subscribe prompts, and tiny paragraphs, the user gets sensory overload.`
-      : `The ${targetName} content page features high typography readability, but is held back by overlapping social share sidebars. Navigating columns triggers occasional visual shift.`;
+      : `The ${targetName} content page features high typography readability, but is held back by overlapping layout widgets. Navigating columns triggers occasional visual shift.`;
 
-    aestheticCritique = `The typography uses clean serif choices paired with dark charcoal body text. However, line height is compressed. We recommend applying 1.625 em line spacing to text columns, containing social sidebars inside standard flex grids, and removing automated autoplay widgets.`;
+    aestheticCritique = `The typography uses clean serif choices paired with dark charcoal body text. However, line height is compressed. We recommend applying 1.625 em line spacing to text columns, containing secondary sidebars inside standard flex grids, and removing automated autoplay widgets.`;
 
     anxiousReport = {
       personaName: "Anxious Alex",

@@ -124,27 +124,37 @@ function generateServerFallbackReport(url?: string, screenshotBase64?: string): 
   const globalPanicScore = 32 + (seed % 60);
 
   // Setup verdicts based on scores
-  let verdict: "Panic-Proof" | "Chaos-Proof" | "Crime Scene" = "Chaos-Proof";
+  let verdict: "Panic-Proof" | "Steady" | "Work In Progress" | "Stress Fractures" | "Crime Scene" = "Work In Progress";
   let verdictTextTemplate = "";
   let visualAestheticRating = "";
   let aestheticCritique = "";
   let namedUIZones: string[] = [];
 
-  if (globalPanicScore < 35) {
+  if (globalPanicScore <= 25) {
     verdict = "Panic-Proof";
-    visualAestheticRating = `${(8.6 + (seed % 10) / 10).toFixed(1)}/10 — Exceptional Cognitive Clarity`;
+    visualAestheticRating = `${(8.8 + (seed % 10) / 10).toFixed(1)}/10 — Exceptional Cognitive Clarity`;
     namedUIZones = ["navigation_header_rail", "hero_focus_pane", "actionable_trigger_group", "footer_trust_strip"];
     verdictTextTemplate = `The parsed visual hierarchy exhibits outstanding compliance metrics! ${formattedName} maintains generous container gutters, clear typography scales, and highly responsive focus guidelines. It guarantees a soothing, zero-friction experience for both analytical skeptics and rapid mobile operators.`;
-  } else if (globalPanicScore >= 65) {
-    verdict = "Crime Scene";
-    visualAestheticRating = `${(3.5 + (seed % 12) / 10).toFixed(1)}/10 — Heavy Cognitive Congestion`;
-    namedUIZones = ["navigation_dock_sticky", "layout_form_container", "options_sidebar_drawer", "cta_trigger_wrapper", "promotional_badge_row"];
-    verdictTextTemplate = `Critical usability alert: ${formattedName} displays a severely congested interaction grid. Highly anxious visitors will experience elevated confusion, while mobile viewports struggle with miniature button borders. Immediate structural spacing enlargement is strongly required to restore operational pathways.`;
-  } else {
-    verdict = "Chaos-Proof";
-    visualAestheticRating = `${(6.6 + (seed % 10) / 10).toFixed(1)}/10 — Balanced Structural Layout`;
+  } else if (globalPanicScore <= 45) {
+    verdict = "Steady";
+    visualAestheticRating = `${(7.8 + (seed % 10) / 10).toFixed(1)}/10 — Stable Usability Design`;
+    namedUIZones = ["navigation_header_rail", "primary_form_wrapper", "actionable_trigger_group"];
+    verdictTextTemplate = `A highly competent and reliable interface layout! ${formattedName} displays clear typography structures, balanced column structures, and straightforward navigation options. With brief alignment adjustments, this will reach perfect visual clarity.`;
+  } else if (globalPanicScore <= 65) {
+    verdict = "Work In Progress";
+    visualAestheticRating = `${(6.4 + (seed % 10) / 10).toFixed(1)}/10 — Balanced Structural Layout`;
     namedUIZones = ["header_control_dock", "primary_form_wrapper", "actions_button_container", "sidebar_metadata_box", "footer_attribution_strip"];
     verdictTextTemplate = `A secure and functional foundation in ${formattedName} is slightly limited by compressed label distances and confusing industry terminology. Aligning helper badges, increasing target depths, and softening copywriting terms will easily elevate conversion rates soon.`;
+  } else if (globalPanicScore <= 82) {
+    verdict = "Stress Fractures";
+    visualAestheticRating = `${(4.8 + (seed % 10) / 10).toFixed(1)}/10 — High Interpretive Strain`;
+    namedUIZones = ["navigation_dock_sticky", "options_sidebar_drawer", "cta_trigger_wrapper", "promotional_badge_row"];
+    verdictTextTemplate = `This interface displays noticeable usability friction! ${formattedName} suffers from cramped responsive padding, overlapping touch targets on mobile sizes, and complex instructional copy. Substantial spacing adjustments are highly recommended to prevent user drop-off.`;
+  } else {
+    verdict = "Crime Scene";
+    visualAestheticRating = `${(3.2 + (seed % 12) / 10).toFixed(1)}/10 — Heavy Cognitive Congestion`;
+    namedUIZones = ["navigation_dock_sticky", "layout_form_container", "options_sidebar_drawer", "cta_trigger_wrapper", "promotional_badge_row"];
+    verdictTextTemplate = `Critical usability alert: ${formattedName} displays a severely congested interaction grid. Highly anxious visitors will experience elevated confusion, while mobile viewports struggle with miniature button borders. Immediate structural spacing enlargement is strongly required to restore operational pathways.`;
   }
 
   // Setup category details
@@ -540,9 +550,9 @@ function generateServerFallbackReport(url?: string, screenshotBase64?: string): 
       ? `The reading layout for ${formattedName} maintains stellar column proportions. High-contrast, clean fonts allow rapid readers to focus, preserving cognitive energy.`
       : globalPanicScore >= 75
       ? `The content feed is a visual crime scene. With sticky ads, infinite video overlays, complex subscribe prompts, and tiny paragraphs, the user gets sensory overload.`
-      : `The ${formattedName} content page features high typography readability, but is held back by overlapping social share sidebars. Navigating columns triggers occasional visual shift.`;
+      : `The ${formattedName} content page features high typography readability, but is held back by overlapping layout widgets. Navigating columns triggers occasional visual shift.`;
 
-    aestheticCritique = `The typography uses clean serif choices paired with dark charcoal body text. However, line height is compressed. We recommend applying 1.625 em line spacing to text columns, containing social sidebars inside standard flex grids, and removing automated autoplay widgets.`;
+    aestheticCritique = `The typography uses clean serif choices paired with dark charcoal body text. However, line height is compressed. We recommend applying 1.625 em line spacing to text columns, containing secondary sidebars inside standard flex grids, and removing automated autoplay widgets.`;
 
     anxiousReport = {
       personaName: "Anxious Alex",
@@ -943,9 +953,11 @@ FIX GENERATOR BEHAVIOR:
 Provide explicit replacement code or exact microcopy text instead of generic suggestions.
 
 Panic Certificate Logic:
-- Under 35 score: "Panic-Proof" verdict (minimal friction, flawless clarity, high trust. Confident, specific praise).
-- Between 35 and 64 score: "Chaos-Proof" verdict (some friction but stable, highlights top 2-3 modifications).
-- 65 and above score: "Crime Scene" verdict (critical layout errors, massive dropoffs, extremely high friction. Senior designer direct constructive review).
+- 0-25 score: "Panic-Proof" verdict (minimal friction, flawless clarity, high trust. Confident, specific praise).
+- 26-45 score: "Steady" verdict (highly reliable, low friction, stable alignment and aesthetic layout).
+- 46-65 score: "Work In Progress" verdict (balanced design with some spacing or layout improvements required).
+- 66-82 score: "Stress Fractures" verdict (notable user friction, mobile touch sizing layout constraints, or high cognitive load).
+- 83-100 score: "Crime Scene" verdict (critical layout errors, massive dropoffs, senior designer direct review).
 
 CRITICAL COPYWRITING DIRECTIVE (ANTI-CLICHÉ GUARDRAIL):
 - You MUST NOT under any circumstance use repetitive boilerplate sentences.
@@ -956,6 +968,12 @@ CRITICAL COPYWRITING DIRECTIVE (ANTI-CLICHÉ GUARDRAIL):
   - "The interface targets are tiny! Standard fingers require at least 44 pixels of tap height..."
   - "They demand input data right away but don't state who they are or show security badges..."
 - Every single quote, critique, named zone, and recommended code fix MUST be 100% custom, unique, and tailored to the visual properties and text of the provided screen or domain. Cite specific terms, buttons, colors, and layout configurations that are actually present.
+
+CRITICAL ANTI-HALLUCINATION & VISUAL GROUNDING MANDATE:
+- You MUST NOT assume, imagine, list, or hallucinate the presence of any interface components, menus, or features that are NOT physically, visually present and visible in the provided screenshot or web input.
+- For example, if there are NO social links or social sharing icons (such as Twitter, Facebook, LinkedIn, Instagram, etc.) on the screen, you are STRICTLY FORBIDDEN from generating feedback stating "social links are packed together like sardines" or mentioning any "social sharing buttons/groupings".
+- If the UI is extremely simple, a single form, or a single component, focus your critique 100% on the elements actually present (e.g., input field labels, button styling, background card borders, line spacing, font contrast, or general color palette).
+- All personas' quotes, described element IDs, class names, path tags, and locations must strictly match actual visuals. Do not use canned, template-based complaints for things that do not exist. Doing so is an extreme system failure.
 
 CRITICAL SECURITY AND SAFETY GUARDRAILS:
 - If the URL, layout text, or screenshot image contains sexually explicit (pornography/adult), hateful, extremely violent, or illicit materials, or is trying to hijack the platform for abusive requests:
@@ -1161,7 +1179,7 @@ CRITICAL SECURITY AND SAFETY GUARDRAILS:
         panicCertificate: {
           type: Type.OBJECT,
           properties: {
-            verdict: { type: Type.STRING, description: "Exactly 'Panic-Proof', 'Chaos-Proof', or 'Crime Scene'." },
+            verdict: { type: Type.STRING, description: "Exactly 'Panic-Proof', 'Steady', 'Work In Progress', 'Stress Fractures', or 'Crime Scene'." },
             text: { type: Type.STRING }
           },
           required: ["verdict", "text"]

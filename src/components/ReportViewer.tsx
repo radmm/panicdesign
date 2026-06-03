@@ -262,49 +262,76 @@ export default function ReportViewer({ report, onBack, onDelete }: ReportViewerP
       </div>
 
       {/* Panic Certificate Official Verdict Badge */}
-      {report.panicCertificate && (
-        <div className={`p-5 rounded-[24px] border border-dashed flex flex-col md:flex-row items-center justify-between gap-4 backdrop-blur-md relative ${
-          report.panicCertificate.verdict === "Panic-Proof" 
-            ? "border-emerald-300 bg-emerald-50/10 text-emerald-800" 
-            : report.panicCertificate.verdict === "Chaos-Proof"
-            ? "border-amber-300 bg-amber-50/10 text-amber-800"
-            : "border-rose-300 bg-rose-50/10 text-rose-800"
-        }`}>
-          <div className="flex items-start gap-4">
-            <div className={`h-11 w-11 rounded-full flex items-center justify-center shrink-0 border shadow-xs ${
-              report.panicCertificate.verdict === "Panic-Proof" 
-                ? "bg-emerald-100 border-emerald-250 text-emerald-600" 
-                : report.panicCertificate.verdict === "Chaos-Proof"
-                ? "bg-amber-100 border-amber-250 text-amber-600"
-                : "bg-rose-100 border-rose-250 text-rose-600"
-            }`}>
-              <Award className="h-5.5 w-5.5" />
+      {report.panicCertificate && (() => {
+        const getVerdictStyles = (verdict: string) => {
+          switch (verdict) {
+            case "Panic-Proof":
+              return {
+                container: "border-emerald-300 bg-emerald-50/10 text-emerald-850",
+                iconCircle: "bg-emerald-100 border-emerald-250 text-emerald-600",
+                badge: "border-emerald-500 text-emerald-600",
+                labelText: "Verified Panic-Proof"
+              };
+            case "Steady":
+              return {
+                container: "border-sky-300 bg-sky-50/10 text-sky-850",
+                iconCircle: "bg-sky-100 border-sky-250 text-sky-600",
+                badge: "border-sky-500 text-sky-600",
+                labelText: "Steady & Clean"
+              };
+            case "Work In Progress":
+              return {
+                container: "border-amber-300 bg-amber-50/10 text-amber-850",
+                iconCircle: "bg-amber-100 border-amber-250 text-amber-600",
+                badge: "border-amber-500 text-amber-600",
+                labelText: "Needs Spacing Work"
+              };
+            case "Stress Fractures":
+              return {
+                container: "border-orange-300 bg-orange-50/10 text-orange-850",
+                iconCircle: "bg-orange-100 border-orange-250 text-orange-600",
+                badge: "border-orange-500 text-orange-600",
+                labelText: "Friction Alert"
+              };
+            case "Crime Scene":
+            default:
+              return {
+                container: "border-rose-300 bg-rose-50/10 text-rose-850",
+                iconCircle: "bg-rose-100 border-rose-250 text-rose-600",
+                badge: "border-rose-500 text-rose-600",
+                labelText: "Severe Friction"
+              };
+          }
+        };
+
+        const styles = getVerdictStyles(report.panicCertificate.verdict);
+
+        return (
+          <div className={`p-5 rounded-[24px] border border-dashed flex flex-col md:flex-row items-center justify-between gap-4 backdrop-blur-md relative ${styles.container}`}>
+            <div className="flex items-start gap-4">
+              <div className={`h-11 w-11 rounded-full flex items-center justify-center shrink-0 border shadow-xs ${styles.iconCircle}`}>
+                <Award className="h-5.5 w-5.5" />
+              </div>
+              <div className="space-y-1">
+                <span className="font-mono text-[8px] uppercase tracking-[0.2em] opacity-80 font-bold block">
+                  OFFICIAL DESIGN AUDIT CERTIFICATE
+                </span>
+                <h3 className="font-sans font-black text-xs tracking-tight text-zinc-900 uppercase">
+                  VERDICT: {report.panicCertificate.verdict}
+                </h3>
+                <p className="font-sans text-[11.5px] text-zinc-700 leading-relaxed max-w-3xl font-medium">
+                  {report.panicCertificate.text}
+                </p>
+              </div>
             </div>
-            <div className="space-y-1">
-              <span className="font-mono text-[8px] uppercase tracking-[0.2em] opacity-80 font-bold block">
-                OFFICIAL DESIGN AUDIT CERTIFICATE
+            <div className="shrink-0 select-none hidden md:block">
+              <span className={`inline-block border font-mono text-[8.5px] uppercase font-black tracking-widest px-3 py-1 rounded-[10px] transform rotate-3 ${styles.badge}`}>
+                {styles.labelText}
               </span>
-              <h3 className="font-sans font-black text-xs tracking-tight text-zinc-900 uppercase">
-                VERDICT: {report.panicCertificate.verdict}
-              </h3>
-              <p className="font-sans text-[11.5px] text-zinc-700 leading-relaxed max-w-3xl font-medium">
-                {report.panicCertificate.text}
-              </p>
             </div>
           </div>
-          <div className="shrink-0 select-none hidden md:block">
-            <span className={`inline-block border font-mono text-[8.5px] uppercase font-black tracking-widest px-3 py-1 rounded-[10px] transform rotate-3 ${
-              report.panicCertificate.verdict === "Panic-Proof"
-                ? "border-emerald-500 text-emerald-600"
-                : report.panicCertificate.verdict === "Chaos-Proof"
-                ? "border-amber-500 text-amber-600"
-                : "border-rose-500 text-rose-600"
-            }`}>
-              VERIFIED COMPLIANCE
-            </span>
-          </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Two Column Section: Aesthetic Critique & Screenshot Preview */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
