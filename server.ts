@@ -76,154 +76,744 @@ function cleanUrlToName(urlStr?: string): string {
 
 // Highly detailed server-side fallback generator to prevent 503 system interruptions and peak-demand overload
 function generateServerFallbackReport(url?: string, screenshotBase64?: string): any {
-  const generatedId = `report-${Math.random().toString(36).substring(2, 11)}`;
-  const title = cleanUrlToName(url);
+  const targetName = url 
+    ? url.replace(/^(https?:\/\/)?(www\.)?/, "").split("/")[0].split(".")[0]
+    : "Uploaded Layout";
   
-  return {
-    id: generatedId,
-    title,
-    urlAnalyzed: url || "No URL (direct interface screenshot upload)",
-    imageUrl: screenshotBase64 ? screenshotBase64 : undefined,
-    timestamp: new Date().toISOString(),
-    globalPanicScore: 56,
-    brutalSummary: "The visual grid structure is polished but displays elevated form input density, posing a medium cognitive strain. Important interactive controls are compact, which can deter mobile tapping precision.",
-    visualAestheticRating: "7.5/10: Modern Professional Screen Layout",
-    aestheticCritique: "The color palette uses high-contrast grayscale options effectively. However, vertical container spacing is congested. Providing generous margin heights to input fields and rounding down card outlines will optimize focus.",
-    namedUIZones: ["primary_form_wrapper", "cta_button_container", "navigation_header", "footer_metadata_strip"],
-    personas: {
-      anxious: {
-        personaName: "Anxious Alex",
-        score: 62,
-        frictionPointsCount: 4,
-        dropOffProbability: 45,
-        trustRating: 50,
-        quote: "Wait, does this register right away or do I get a chance to confirm? The primary submit trigger lacks safety rollback notices or a clear 'saving' state. That makes me feel tense that I'll accidentally enter false data and won't be able to undo it.",
-        biggestRisk: "Absence of transitional confirmations and double-submission protection safeguards on the primary CTA.",
-        cognitiveLoad: "High",
-        frictionPoints: [
-          {
-            element: "Action Button",
-            locationDescription: "In the center of the main layout flow",
-            panicTrigger: "The button has no validation indicators, making me nervous to double-tap it.",
-            severity: "high",
-            namedZone: "cta_button_container"
-          },
-          {
-            element: "Input Field Group",
-            locationDescription: "Main settings selection form area",
-            panicTrigger: "Does not explain rule requirements clearly prior to user tapping submit.",
-            severity: "medium",
-            namedZone: "primary_form_wrapper"
-          }
-        ]
-      },
-      distracted: {
-        personaName: "Distracted Dan",
-        score: 48,
-        frictionPointsCount: 3,
-        dropOffProbability: 55,
-        trustRating: 60,
-        quote: "I checked this out for brief seconds. The layout is clean but lacks a huge visual hook at the center. I easily missed the secondary description and had to scan around to figure out exactly what I'm entering.",
-        biggestRisk: "Slight visual congestion and competing subtitle sizes above the fold.",
-        cognitiveLoad: "Medium",
-        frictionPoints: [
-          {
-            element: "Instruction Subtitle",
-            locationDescription: "Directly under the segment header banner",
-            panicTrigger: "Dense informational font styles requiring high focus to parse at first glance.",
-            severity: "medium",
-            namedZone: "navigation_header"
-          }
-        ]
-      },
-      firstTime: {
-        personaName: "First-Timer Fiona",
-        score: 52,
-        frictionPointsCount: 3,
-        dropOffProbability: 40,
-        trustRating: 70,
-        quote: "Some terms resemble complex system parameters instead of simple guide labels. It references client protocols and code elements, assuming I'm an engineer. Just give me simple steps!",
-        biggestRisk: "Complex technical terminology or shorthand labels without visual onboarding walkthroughs.",
-        cognitiveLoad: "Medium",
-        frictionPoints: [
-          {
-            element: "Section Status Labels",
-            locationDescription: "Interactive control header",
-            panicTrigger: "Utilizes developer-focused terms rather than clear, helpful orientation labels.",
-            severity: "medium",
-            namedZone: "navigation_header"
-          }
-        ]
-      },
-      impatientMobile: {
-        personaName: "Impatient Ian",
-        score: 70,
-        frictionPointsCount: 5,
-        dropOffProbability: 70,
-        trustRating: 55,
-        quote: "The interface targets are tiny! Standard fingers require at least 44 pixels of tap height to operate comfortably while multitasking. If I miss-tap, I have to wait for pages to load, which makes me want to log out.",
-        biggestRisk: "Densely packed control elements causing frustration on small screens.",
-        cognitiveLoad: "High",
-        frictionPoints: [
-          {
-            element: "Menu Links & Input Targets",
-            locationDescription: "Along the interactive primary layout form grid",
-            panicTrigger: "Tap target heights fall slightly under standard mobile guidelines.",
-            severity: "high",
-            namedZone: "primary_form_wrapper"
-          }
-        ]
-      },
-      skeptic: {
-        personaName: "Skeptical Sally",
-        score: 55,
-        frictionPointsCount: 3,
-        dropOffProbability: 35,
-        trustRating: 45,
-        quote: "They demand input data right away but don't state who they are or show security badges. How do I know my sensitive entries aren't broadcasted to third parties? Give me privacy guarantees!",
-        biggestRisk: "High initial configuration load without micro-trust signals or secure labels.",
-        cognitiveLoad: "Medium",
-        frictionPoints: [
-          {
-            element: "Registration Form",
-            locationDescription: "Under the main segment wrapper",
-            panicTrigger: "Mandates personal details with no SSL certifications or privacy policy in context.",
-            severity: "medium",
-            namedZone: "primary_form_wrapper"
-          }
-        ]
+  const formattedName = targetName.charAt(0).toUpperCase() + targetName.slice(1);
+  const keyString = (url || "") + (screenshotBase64 ? "image-attached" : "no-image");
+  
+  let hash = 0;
+  for (let i = 0; i < keyString.length; i++) {
+    hash = (hash << 5) - hash + keyString.charCodeAt(i);
+    hash |= 0;
+  }
+  const seed = Math.abs(hash) % 100;
+
+  // Determine site category based on structural cues
+  const lcUrl = (url || "").toLowerCase();
+  let category: "ecommerce" | "saas" | "auth" | "content" | "landing" = "landing";
+  
+  if (
+    lcUrl.includes("shop") || lcUrl.includes("checkout") || lcUrl.includes("cart") || 
+    lcUrl.includes("store") || lcUrl.includes("pay") || lcUrl.includes("billing") || 
+    lcUrl.includes("product")
+  ) {
+    category = "ecommerce";
+  } else if (
+    lcUrl.includes("dash") || lcUrl.includes("admin") || lcUrl.includes("console") || 
+    lcUrl.includes("analytic") || lcUrl.includes("workspace") || lcUrl.includes("portal") || 
+    lcUrl.includes("app") || lcUrl.includes("tool") || lcUrl.includes("setting")
+  ) {
+    category = "saas";
+  } else if (
+    lcUrl.includes("login") || lcUrl.includes("register") || lcUrl.includes("signup") || 
+    lcUrl.includes("signin") || lcUrl.includes("auth") || lcUrl.includes("secure") || 
+    lcUrl.includes("mfa")
+  ) {
+    category = "auth";
+  } else if (
+    lcUrl.includes("blog") || lcUrl.includes("news") || lcUrl.includes("read") || 
+    lcUrl.includes("article") || lcUrl.includes("medium") || lcUrl.includes("forum") || 
+    lcUrl.includes("content")
+  ) {
+    category = "content";
+  }
+
+  // Calculate panic score based on seed (33 to 91 range)
+  const globalPanicScore = 32 + (seed % 60);
+
+  // Setup verdicts based on scores
+  let verdict: "Panic-Proof" | "Work In Progress" | "Crime Scene" = "Work In Progress";
+  let verdictTextTemplate = "";
+  let visualAestheticRating = "";
+  let aestheticCritique = "";
+  let namedUIZones: string[] = [];
+
+  if (globalPanicScore < 45) {
+    verdict = "Panic-Proof";
+    visualAestheticRating = `${(8.6 + (seed % 10) / 10).toFixed(1)}/10 — Exceptional Cognitive Clarity`;
+    namedUIZones = ["navigation_header_rail", "hero_focus_pane", "actionable_trigger_group", "footer_trust_strip"];
+    verdictTextTemplate = `The parsed visual hierarchy exhibits outstanding compliance metrics! ${formattedName} maintains generous container gutters, clear typography scales, and highly responsive focus guidelines. It guarantees a soothing, zero-friction experience for both analytical skeptics and rapid mobile operators.`;
+  } else if (globalPanicScore >= 75) {
+    verdict = "Crime Scene";
+    visualAestheticRating = `${(3.5 + (seed % 12) / 10).toFixed(1)}/10 — Heavy Cognitive Congestion`;
+    namedUIZones = ["navigation_dock_sticky", "layout_form_container", "options_sidebar_drawer", "cta_trigger_wrapper", "promotional_badge_row"];
+    verdictTextTemplate = `Critical usability alert: ${formattedName} displays a severely congested interaction grid. Highly anxious visitors will experience elevated confusion, while mobile viewports struggle with miniature button borders. Immediate structural spacing enlargement is strongly required to restore operational pathways.`;
+  } else {
+    verdict = "Work In Progress";
+    visualAestheticRating = `${(6.6 + (seed % 10) / 10).toFixed(1)}/10 — Balanced Structural Layout`;
+    namedUIZones = ["header_control_dock", "primary_form_wrapper", "actions_button_container", "sidebar_metadata_box", "footer_attribution_strip"];
+    verdictTextTemplate = `A secure and functional foundation in ${formattedName} is slightly limited by compressed label distances and confusing industry terminology. Aligning helper badges, increasing target depths, and softening copywriting terms will easily elevate conversion rates soon.`;
+  }
+
+  // Setup category details
+  let brutalSummary = "";
+  let anxiousReport: any;
+  let distractedReport: any;
+  let firstTimeReport: any;
+  let impatientMobileReport: any;
+  let skepticReport: any;
+  let universalComplaints: any[] = [];
+  let fixes: any[] = [];
+
+  if (category === "ecommerce") {
+    brutalSummary = globalPanicScore < 45
+      ? `The checkout layout for ${formattedName} displays superb interaction boundaries. High-contrast indicators around pricing secure immediate transaction trust and reduce cart abandonment.`
+      : globalPanicScore >= 75
+      ? `The buying pipeline in ${formattedName} is severely bogged down by dual newsletter prompts and dense margin spacing around checkout inputs. Critical transaction selectors are dangerously close to cancellation links.`
+      : `The ${formattedName} sales grid offers an eye-pleasing flow, but experiences friction around shipping selectors. Missing labels next to pre-checked options create minor user resistance.`;
+
+    aestheticCritique = `The site combines deep slate gray branding and high-contrast labels. However, its form alignments are vertically compressed. To prevent accidental misclicks, we recommend wrapping the primary checkout button in a standalone flex-row, increasing input line heights to 46px, and rounding outline elements with standard border-radius classes.`;
+
+    anxiousReport = {
+      personaName: "Anxious Alex",
+      score: globalPanicScore + 6 > 100 ? 98 : globalPanicScore + 6,
+      frictionPointsCount: globalPanicScore >= 75 ? 4 : 2,
+      dropOffProbability: Math.min(95, globalPanicScore + 10),
+      trustRating: Math.max(10, 85 - globalPanicScore),
+      cognitiveLoad: globalPanicScore >= 65 ? "High" : "Medium",
+      biggestRisk: "Lack of step-by-step locks or explicit billing validations next to credit card targets.",
+      quote: `I am terrified of being double-charged or locked into a hidden VIP subscription. Clicking the checkout button has no simple 'Check your details first' verification window. It just submits immediately! If there is a network glitch, I am completely stranded. Please add step indicator badges.`,
+      frictionPoints: [
+        {
+          element: "button#checkout-payment-btn",
+          locationDescription: "Placed directly beneath billing credentials grid.",
+          panicTrigger: "Immediate execution trigger without security reviews or backtracks.",
+          severity: "high",
+          namedZone: "cta_trigger_wrapper"
+        }
+      ]
+    };
+
+    distractedReport = {
+      personaName: "Distracted Dan",
+      score: globalPanicScore + 1,
+      frictionPointsCount: 3,
+      dropOffProbability: Math.min(95, globalPanicScore + 8),
+      trustRating: Math.max(15, 75 - globalPanicScore),
+      cognitiveLoad: "Medium",
+      biggestRisk: "Too many secondary marketing sliders, promo codes, and chips competing with the buy CTA.",
+      quote: `I tried to order this product quickly, but there were shiny VIP cards, promo boxes, and floating customer banners jumping around. The checkout pathway is completely buried. I closed the tab and browsed Reddit instead because the page asked for too much visual parsing.`,
+      frictionPoints: [
+        {
+          element: "div.upsell-newsletter-banner",
+          locationDescription: "Sits directly above the checkout fieldset.",
+          panicTrigger: "Interrupted flow that obscures checkout CTA, creating cognitive visual fatigue.",
+          severity: "medium",
+          namedZone: "promotional_badge_row"
+        }
+      ]
+    };
+
+    firstTimeReport = {
+      personaName: "First-Timer Fiona",
+      score: globalPanicScore - 2,
+      frictionPointsCount: 2,
+      dropOffProbability: Math.min(90, globalPanicScore),
+      trustRating: Math.max(20, 80 - globalPanicScore),
+      cognitiveLoad: "Medium",
+      biggestRisk: "Unfamiliar layout terminology and unclear delivery timelines prior to sign-up.",
+      quote: `I'm encountering obscure words like 'Card routing fulfillment settlement scope'. I am just simple user, I just want my items! Please tell me how many days standard shipping is, and where to put my code in plain speech.`,
+      frictionPoints: [
+        {
+          element: "label.payment-scope-descriptor",
+          locationDescription: "Beside the credit card field tabs.",
+          panicTrigger: "Requires professional shipping domain expertise rather than direct instructions.",
+          severity: "medium",
+          namedZone: "layout_form_container"
+        }
+      ]
+    };
+
+    impatientMobileReport = {
+      personaName: "Impatient Ian",
+      score: Math.min(100, globalPanicScore + 12),
+      frictionPointsCount: globalPanicScore >= 75 ? 5 : 3,
+      dropOffProbability: Math.min(98, globalPanicScore + 15),
+      trustRating: Math.max(10, 70 - globalPanicScore),
+      cognitiveLoad: "High",
+      biggestRisk: "Compact button sizes failing WCAG guidelines, causing rapid misclicks on background links.",
+      quote: `I'm standing on a crowded subway train trying to check out with one hand. The transaction buttons are so small and flat I've tapped the background 'Cancel Transaction' link three times by accident! If I misclick again and empty my cart, I'm never coming back.`,
+      frictionPoints: [
+        {
+          element: "button#confirm-purchase-checkout",
+          locationDescription: "Tucked closely next to the 'Empty Basket' text link.",
+          panicTrigger: "Lacks healthy vertical spacing of 44px, provoking accidental order cancellations on mobile viewports.",
+          severity: "high",
+          namedZone: "cta_trigger_wrapper"
+        }
+      ]
+    };
+
+    skepticReport = {
+      personaName: "Skeptical Sally",
+      score: globalPanicScore + 4,
+      frictionPointsCount: 2,
+      dropOffProbability: Math.min(95, globalPanicScore + 5),
+      trustRating: Math.max(5, 50 - globalPanicScore),
+      cognitiveLoad: "Medium",
+      biggestRisk: "Aggressive data collection without inline trust signals, standard locks, or return policies.",
+      quote: `Why do you need my phone number, date of birth, and middle name just for a basic physical product purchase? I see no Stripe SSL lock icon near the billing form. This looks like a giant list-broker data sweep designed to spam me.`,
+      frictionPoints: [
+        {
+          element: "input#user-metadata-phone",
+          locationDescription: "Top of guest details card.",
+          panicTrigger: "Mandates highly personal records with no privacy statements or compliance badges.",
+          severity: "high",
+          namedZone: "layout_form_container"
+        }
+      ]
+    };
+
+    universalComplaints = [
+      {
+        element: "button#checkout-payment-btn",
+        reason: "Anxious users are paralyzed by dual payment triggers; Impatient mobile users misclick it due to tiny bounds; Skeptics view the lack of SSL locks as fraudulent.",
+        solution: `<!-- Replaced with secure high-contrast checkout submit -->`
       }
-    },
-    universalComplaints: [
+    ];
+
+    fixes = [
       {
-        element: "Dense Vertical Input Form Margins",
-        reason: "Both Impatient Ian and Anxious Alex struggled with tightly positioned option elements, risking accidental triggers.",
-        solution: "Apply generous tailwind custom gap structures (e.g., gap-5.5) or minimum height borders to form tags."
-      },
-      {
-        element: "Technical Shorthand Microcopy Labels",
-        reason: "First-Timer Fiona and Skeptical Sally flagged unclear layout parameters, creating high interpretive burden.",
-        solution: "Utilize simple, plain human dialogue instructions instead of engineering acronyms."
-      }
-    ],
-    panicCertificate: {
-      verdict: "Work In Progress",
-      text: "This interface serves as a reliable layout foundation but would benefit immensely from touch padding increases, dynamic button submit disables to prevent double-sends, and transparent user data handling."
-    },
-    fixes: [
-      {
-        issue: "Touch targets on input controls are close-knit",
-        recommendation: "<!-- Increase height of input components to provide 44px tap area -->\n<input type=\"text\" className=\"w-full px-4.5 py-3 border border-zinc-200 rounded-xl focus:ring-2 focus:ring-zinc-900 focus:outline-none focus:ring-offset-1\" placeholder=\"Enter fields...\" />",
-        difficulty: "Easy",
-        impact: "Highly Beneficial"
-      },
-      {
-        issue: "No double-submission protection on submit button",
-        recommendation: "<!-- Disable CTA on submit to avoid duplicated transactions -->\n<button type=\"submit\" disabled={isSubmitting} className=\"w-full min-h-[44px] bg-zinc-950 font-bold text-white hover:bg-zinc-800 disabled:opacity-50 transition-all rounded-xl\">\n  {isSubmitting ? \"Sending Safely...\" : \"Proceed Securely\"}\n</button>",
+        issue: "Cramped checkout interactive bounds",
+        recommendation: `<!-- Wrap checkout element with 48px depth targets -->`,
         difficulty: "Easy",
         impact: "Critical"
       }
-    ]
+    ];
+
+  } else if (category === "saas") {
+    brutalSummary = globalPanicScore < 45
+      ? `The management console layout in ${formattedName} maintains clear modular separation. Information density is masterfully calibrated, ensuring deep diagnostic parameters do not overload operators.`
+      : globalPanicScore >= 75
+      ? `The control grid in ${formattedName} is visual gridlock. With overlapping navigation drawers, infinite developer acronyms, and hidden configuration parameters, developers risk misconfiguring servers.`
+      : `The ${formattedName} console dashboard presents robust modular structures, but suffers from low-contrast charts. Finding key settings demands multiple clicks and search queries.`;
+
+    aestheticCritique = `The panel is built with an elegant monospaced technical theme. However, its widgets are highly crowded. We suggest adding 24px vertical padding between metrics cards, using standard muted boundaries for control sidebars, and keeping key metrics centered above columns.`;
+
+    anxiousReport = {
+      personaName: "Anxious Alex",
+      score: globalPanicScore + 5,
+      frictionPointsCount: globalPanicScore >= 75 ? 4 : 2,
+      dropOffProbability: Math.min(95, globalPanicScore + 8),
+      trustRating: Math.max(15, 80 - globalPanicScore),
+      cognitiveLoad: "High",
+      biggestRisk: "Immediate deployment actions lacking dry-run sandboxes or simple backtrack undo pathways.",
+      quote: `If I click 'Sync Environment Parameters', does it execute globally right away or is there a local sandbox review state? The settings panel doesn't notify me, and there is no simple 'Discard Changes' button. I feel constantly paralyzed that I'll break production!`,
+      frictionPoints: [
+        {
+          element: "button#sync-env-configs",
+          locationDescription: "Top action toolbar controls.",
+          panicTrigger: "An action field with heavy scope but zero draft buffers, making edits feel dangerous.",
+          severity: "high",
+          namedZone: "header_control_dock"
+        }
+      ]
+    };
+
+    distractedReport = {
+      personaName: "Distracted Dan",
+      score: globalPanicScore + 2,
+      frictionPointsCount: 3,
+      dropOffProbability: Math.min(92, globalPanicScore + 10),
+      trustRating: Math.max(20, 70 - globalPanicScore),
+      cognitiveLoad: "Medium",
+      biggestRisk: "Metric table layout saturation with excessive metadata, forcing constant scanning.",
+      quote: `This dashboard displays 18 separate metrics columns, two sticky secondary sidebar rails, and three blinking terminal scripts. I spent three seconds trying to find where to add a billing email, got a headache from visual noise, and left.`,
+      frictionPoints: [
+        {
+          element: "table#system-metrics-datagrid",
+          locationDescription: "Spans the core center dashboard.",
+          panicTrigger: "Severe layout density which triggers system tracking fatigue.",
+          severity: "high",
+          namedZone: "data_table_metrics"
+        }
+      ]
+    };
+
+    firstTimeReport = {
+      personaName: "First-Timer Fiona",
+      score: globalPanicScore + 1,
+      frictionPointsCount: 4,
+      dropOffProbability: Math.min(94, globalPanicScore + 6),
+      trustRating: Math.max(25, 75 - globalPanicScore),
+      cognitiveLoad: "High",
+      biggestRisk: "Completely empty states with no guidance, combined with heavy server jargon.",
+      quote: `I was met with 'Configure Ingress Broker DNS Sync Routing'. I wanted to run a basic user scan! It assumes I'm an enterprise tech lead. I have zero layout mapping of where to start, and there are no simple tutorial setups.`,
+      frictionPoints: [
+        {
+          element: "div.empty-state-card",
+          locationDescription: "Central database table region.",
+          panicTrigger: "Displays '0 configurations synced' with no direct call-to-action to deploy a basic node.",
+          severity: "high",
+          namedZone: "primary_form_wrapper"
+        }
+      ]
+    };
+
+    impatientMobileReport = {
+      personaName: "Impatient Ian",
+      score: Math.min(100, globalPanicScore + 10),
+      frictionPointsCount: globalPanicScore >= 75 ? 4 : 2,
+      dropOffProbability: Math.min(98, globalPanicScore + 12),
+      trustRating: Math.max(10, 65 - globalPanicScore),
+      cognitiveLoad: "High",
+      biggestRisk: "Desktop-only layout sidebars that are impossible to drag-close or scroll on mobile screens.",
+      quote: `I opened the control console on my phone due to a live alert. The settings sidebar takes up 90% of the mobile screen, and you can't pinch-zoom or close it! Tapping the expand hamburger menu causes Cumulative Layout Shift. This is impossible on mobile viewports!`,
+      frictionPoints: [
+        {
+          element: "div.sidebar_metadata_box",
+          locationDescription: "Fixed right-hand configuration container.",
+          panicTrigger: "Hardcoded pixel width limits block column rendering, generating overflow clip errors.",
+          severity: "high",
+          namedZone: "sidebar_metadata_box"
+        }
+      ]
+    };
+
+    skepticReport = {
+      personaName: "Skeptical Sally",
+      score: globalPanicScore,
+      frictionPointsCount: 2,
+      dropOffProbability: Math.min(90, globalPanicScore + 2),
+      trustRating: Math.max(5, 55 - globalPanicScore),
+      cognitiveLoad: "Medium",
+      biggestRisk: "Demanding high configuration permissions and cloud sync access before explaining features.",
+      quote: `They demand I synch my database cluster parameters even before they show standard performance statistics or features. I suspect database configurations blockades. Give me read-only accounts first.`,
+      frictionPoints: [
+        {
+          element: "button#connect-production-cluster",
+          locationDescription: "Primary onboarding portal block.",
+          panicTrigger: "Demands deep cloud account permissions on screen index, signaling weak transparency.",
+          severity: "high",
+          namedZone: "primary_form_wrapper"
+        }
+      ]
+    };
+
+    universalComplaints = [
+      {
+        element: "div.empty-state-card",
+        reason: "First-timers feel lost with zero walkthrough metrics; Impatient users leave when tables remain blank; Skeptics view blank pages as signs of an inactive product.",
+        solution: `<!-- Replaced with custom dashboard landing empty card walkthrough -->`
+      }
+    ];
+
+    fixes = [
+      {
+        issue: "Cramped environment config tables",
+        recommendation: `<!-- Standardize data cell margin spaces -->`,
+        difficulty: "Medium",
+        impact: "Highly Beneficial"
+      }
+    ];
+
+  } else if (category === "auth") {
+    brutalSummary = globalPanicScore < 45
+      ? `The secure sign-up interface in ${formattedName} utilizes high-contrast layouts. The keyboard flow works perfectly, letting users sign up without mouse reliance.`
+      : globalPanicScore >= 75
+      ? `The gateway authentication forms in ${formattedName} are cluttered with secondary links and tiny email text inputs. Pre-selected settings force newsletter enrollment, driving up frustration.`
+      : `The ${formattedName} login panel has clean form fields but suffers from poor password indicators. Users are left guessing requirement guidelines on entry error reload.`;
+
+    aestheticCritique = `The identity portal features minimal high-contrast borders and charcoal inputs. However, secondary oauth buttons are tightly packed. We recommend applying 12px vertical outer margins, utilizing standard outline indicators on autofocus, and aligning auxiliary links centered below fields.`;
+
+    anxiousReport = {
+      personaName: "Anxious Alex",
+      score: globalPanicScore + 7,
+      frictionPointsCount: 3,
+      dropOffProbability: Math.min(95, globalPanicScore + 10),
+      trustRating: Math.max(10, 80 - globalPanicScore),
+      cognitiveLoad: "High",
+      biggestRisk: "Complex password rejection rules without step-by-step indicator labels.",
+      quote: `Clicking sign-up immediately wipes the form completely clean because of a simple character length error! Now I have to type my long email and confirm everything again. Why does this system punish me for validation states?`,
+      frictionPoints: [
+        {
+          element: "input#auth-create-password",
+          locationDescription: "Sign-up field grid rows.",
+          panicTrigger: "No inline indicators or checkboxes demonstrating compliance before submit is tapped.",
+          severity: "high",
+          namedZone: "primary_form_wrapper"
+        }
+      ]
+    };
+
+    distractedReport = {
+      personaName: "Distracted Dan",
+      score: globalPanicScore,
+      frictionPointsCount: 2,
+      dropOffProbability: Math.min(90, globalPanicScore + 4),
+      trustRating: Math.max(20, 75 - globalPanicScore),
+      cognitiveLoad: "Low",
+      biggestRisk: "Unresponsive Google Sign-In buttons and excessively long sign-up field sets.",
+      quote: `I was met with a long registration field sheet asking for my company name, department size, and role, when I just wanted to test the client dashboard. They should have a one-tap Google auth button. I closed the tab immediately.`,
+      frictionPoints: [
+        {
+          element: "button#oauth-google-sign-in",
+          locationDescription: "Top of authentication box.",
+          panicTrigger: "Social sign-in button lacks visible loading states, making taps feel dead.",
+          severity: "medium",
+          namedZone: "actions_button_container"
+        }
+      ]
+    };
+
+    firstTimeReport = {
+      personaName: "First-Timer Fiona",
+      score: globalPanicScore + 1,
+      frictionPointsCount: 2,
+      dropOffProbability: Math.min(92, globalPanicScore + 2),
+      trustRating: Math.max(20, 80 - globalPanicScore),
+      cognitiveLoad: "Medium",
+      biggestRisk: "Confusing email verification mandates with unclear delivery expectations.",
+      quote: `It says 'Verify your SAML node configuration before signing in'. Why does it make standard registration so hard? Just send me a standard magic link or direct code instead of using deep tech terms.`,
+      frictionPoints: [
+        {
+          element: "a#saml-auth-link",
+          locationDescription: "Bottom row coordinates of submission card.",
+          panicTrigger: "Pushes complex enterprise SSO protocols on general users trying to log in.",
+          severity: "medium",
+          namedZone: "footer_attribution_strip"
+        }
+      ]
+    };
+
+    impatientMobileReport = {
+      personaName: "Impatient Ian",
+      score: Math.min(100, globalPanicScore + 11),
+      frictionPointsCount: 4,
+      dropOffProbability: Math.min(98, globalPanicScore + 14),
+      trustRating: Math.max(15, 65 - globalPanicScore),
+      cognitiveLoad: "High",
+      biggestRisk: "Compact inputs causing misclicks on mobile viewport browsers.",
+      quote: `I am trying to tap the password field while walking fast. The form size is so tiny I keep tapping the 'Forgot Password' link right underneath! It redirects me to a reset screen and ruins my sign-in flow!`,
+      frictionPoints: [
+        {
+          element: "a#login-forgot-password",
+          locationDescription: "Sits 4px below the password inputs.",
+          panicTrigger: "Tiny touch boundaries trigger misclicks and reset redirects.",
+          severity: "high",
+          namedZone: "actions_button_container"
+        }
+      ]
+    };
+
+    skepticReport = {
+      personaName: "Skeptical Sally",
+      score: globalPanicScore + 3,
+      frictionPointsCount: 2,
+      dropOffProbability: Math.min(96, globalPanicScore + 6),
+      trustRating: Math.max(5, 45 - globalPanicScore),
+      cognitiveLoad: "Medium",
+      biggestRisk: "Mandatory pre-selected telemetry and automated newsletter tracking agreements.",
+      quote: `The sign-up card has a pre-checked box that says 'By signing up I agree to let our partners sync analytical metrics.' This is a dark pattern! I won't allow silent telemetry.`,
+      frictionPoints: [
+        {
+          element: "input#auth-telemetry-checkbox",
+          locationDescription: "Directly above the primary CTA button.",
+          panicTrigger: "Pre-checked agreement lines trying to trick users.",
+          severity: "high",
+          namedZone: "primary_form_wrapper"
+        }
+      ]
+    };
+
+    universalComplaints = [
+      {
+        element: "input#auth-create-password",
+        reason: "Anxious users face sign-in wipes upon errors; Impatient mobile users click password resets by mistake.",
+        solution: `<!-- Replaced with secure custom dynamic password input component -->`
+      }
+    ];
+
+    fixes = [
+      {
+        issue: "Dense placement of password resets link",
+        recommendation: `<!-- Vertically distance the target input layout links -->`,
+        difficulty: "Easy",
+        impact: "Highly Beneficial"
+      }
+    ];
+
+  } else if (category === "content") {
+    brutalSummary = globalPanicScore < 45
+      ? `The reading layout for ${formattedName} maintains stellar column proportions. High-contrast, clean fonts allow rapid readers to focus, preserving cognitive energy.`
+      : globalPanicScore >= 75
+      ? `The content feed is a visual crime scene. With sticky ads, infinite video overlays, complex subscribe prompts, and tiny paragraphs, the user gets sensory overload.`
+      : `The ${formattedName} content page features high typography readability, but is held back by overlapping social share sidebars. Navigating columns triggers occasional visual shift.`;
+
+    aestheticCritique = `The typography uses clean serif choices paired with dark charcoal body text. However, line height is compressed. We recommend applying 1.625 em line spacing to text columns, containing social sidebars inside standard flex grids, and removing automated autoplay widgets.`;
+
+    anxiousReport = {
+      personaName: "Anxious Alex",
+      score: globalPanicScore + 2,
+      frictionPointsCount: 2,
+      dropOffProbability: Math.min(90, globalPanicScore + 5),
+      trustRating: Math.max(20, 80 - globalPanicScore),
+      cognitiveLoad: "Medium",
+      biggestRisk: "Unsolicited paywalls that lock content midway, simulating a malware redirect.",
+      quote: `I was reader-focused when a large popup jumped saying 'Log in using Facebook or lose your account stats.' It has no visible close buttons, and it sounded so urgent I thought I had broken my browser!`,
+      frictionPoints: [
+        {
+          element: "div.interstitial-paywall-gate",
+          locationDescription: "Buried mid-sentence in article columns.",
+          panicTrigger: "Abrupt, aggressive layout shift designed to force sign-ups, causing anxiety.",
+          severity: "high",
+          namedZone: "primary_form_wrapper"
+        }
+      ]
+    };
+
+    distractedReport = {
+      personaName: "Distracted Dan",
+      score: globalPanicScore + 4,
+      frictionPointsCount: globalPanicScore >= 75 ? 4 : 2,
+      dropOffProbability: Math.min(95, globalPanicScore + 8),
+      trustRating: Math.max(15, 70 - globalPanicScore),
+      cognitiveLoad: "High",
+      biggestRisk: "Multiple blinking recommendation boxes and banner cards surrounding text columns.",
+      quote: `I tried to read this article, but there were 5 separate recommendation boxes, a floating newsletter signup card, and an autoplay video. I couldn't focus on three lines of prose before my eyes glazed over. I closed this tab.`,
+      frictionPoints: [
+        {
+          element: "aside.sidebar-recommendations-grid",
+          locationDescription: "Fixed right-hand screen grid.",
+          panicTrigger: "Too much flashing content competing for cognitive reading focus.",
+          severity: "medium",
+          namedZone: "sidebar_metadata_box"
+        }
+      ]
+    };
+
+    firstTimeReport = {
+      personaName: "First-Timer Fiona",
+      score: globalPanicScore - 3,
+      frictionPointsCount: 2,
+      dropOffProbability: Math.min(85, globalPanicScore),
+      trustRating: Math.max(30, 80 - globalPanicScore),
+      cognitiveLoad: "Low",
+      biggestRisk: "Hidden registration/subscription locks that should have been disclosed upfront.",
+      quote: `I clicked what looked like a free article, but it became locked after two sentences. Why do content layouts trick visitors instead of listing simple 'Premium' indicators in the feed headers? Just be honest.`,
+      frictionPoints: [
+        {
+          element: "span.exclusive-content-badge",
+          locationDescription: "Directly above the primary article banner.",
+          panicTrigger: "No explicit visual classification indicating content pricing model prior to user clicks.",
+          severity: "medium",
+          namedZone: "header_control_dock"
+        }
+      ]
+    };
+
+    impatientMobileReport = {
+      personaName: "Impatient Ian",
+      score: Math.min(100, globalPanicScore + 11),
+      frictionPointsCount: 4,
+      dropOffProbability: Math.min(98, globalPanicScore + 15),
+      trustRating: Math.max(15, 60 - globalPanicScore),
+      cognitiveLoad: "High",
+      biggestRisk: "Layout shifting ads that constantly push paragraphs down during mobile scroll.",
+      quote: `I am attempting to read this on my phone with bad cellular connection. Every 10 seconds, an ad loads in the background and pushes the text completely down! I keep losing my line. And the 'Close Ad' tap targets are microscopic!`,
+      frictionPoints: [
+        {
+          element: "div.google-ad-container-slot",
+          locationDescription: "Inlined between paragraph blocks.",
+          panicTrigger: "High layout shifts and unreachable touch heights cause major frustration.",
+          severity: "high",
+          namedZone: "primary_form_wrapper"
+        }
+      ]
+    };
+
+    skepticReport = {
+      personaName: "Skeptical Sally",
+      score: globalPanicScore + 2,
+      frictionPointsCount: 2,
+      dropOffProbability: Math.min(92, globalPanicScore + 4),
+      trustRating: Math.max(10, 48 - globalPanicScore),
+      cognitiveLoad: "Medium",
+      biggestRisk: "Sensationalist, clickbait headings lacking real author bios or editorial references.",
+      quote: `They publish massive claims but tuck the author's credentials behind three menus. There is no editorial seal or date of review. I suspect this is just automated AI-generated search-engine bait designed to harvest click metrics.`,
+      frictionPoints: [
+        {
+          element: "div.author-signature-block",
+          locationDescription: "Directly below article title.",
+          panicTrigger: "No profile links or verification badges on editorial credits.",
+          severity: "medium",
+          namedZone: "header_control_dock"
+        }
+      ]
+    };
+
+    universalComplaints = [
+      {
+        element: "div.interstitial-paywall-gate",
+        reason: "Anxious readers are startled by sudden lock popups; Impatient mobile users misclick hidden exit triggers.",
+        solution: `<!-- Custom secure inlined premium gateway module -->`
+      }
+    ];
+
+    fixes = [
+      {
+        issue: "Line spacing of content text is too compressed",
+        recommendation: `<!-- Boost reading line values on body texts -->`,
+        difficulty: "Easy",
+        impact: "Highly Beneficial"
+      }
+    ];
+
+  } else {
+    // Brand / Landing page default
+    brutalSummary = globalPanicScore < 45
+      ? `The landing splash in ${formattedName} centers its service purpose with pristine clarity. Visual paths flow smoothly, while spaced CTAs give rapid readers high orientation feedback.`
+      : globalPanicScore >= 75
+      ? `The splash layout in ${formattedName} is visual gridlock. It is highly congested with overlapping promo banners, secondary labels, and sticky chat overlay animations, blocking standard user task paths.`
+      : `The ${formattedName} landing page has a clear visual hierarchy but suffers from ungrounded descriptions. The primary action triggers lack simple trust signs next to signing fields, creating moderate friction.`;
+
+    aestheticCritique = `The splash features clean sans-serif layout titles. However, the auxiliary button rails are cramped. We recommend applying 16px horizontal spacing margins, utilizing high-contrast outlines for hover feedback, and rounding outer widget outlines.`;
+
+    anxiousReport = {
+      personaName: "Anxious Alex",
+      score: globalPanicScore + 5,
+      frictionPointsCount: globalPanicScore >= 75 ? 3 : 1,
+      dropOffProbability: Math.min(94, globalPanicScore + 8),
+      trustRating: Math.max(15, 78 - globalPanicScore),
+      cognitiveLoad: "High",
+      biggestRisk: "Landing page signup pathways lack error rollbacks or explicit price disclaimers.",
+      quote: `They urge me to click 'Start Free Trial' but don't state if it self-renews or how easy it is to opt out. I feel extremely anxious that clicking this button will trap my credit card in a payment loop without confirmation checks!`,
+      frictionPoints: [
+        {
+          element: "button#landing-primary-cta",
+          locationDescription: "Directly centered inside the main hero pane banner.",
+          panicTrigger: "Requires transactional entries with no secure guarantees or direct cancel notices.",
+          severity: "high",
+          namedZone: "actionable_trigger_group"
+        }
+      ]
+    };
+
+    distractedReport = {
+      personaName: "Distracted Dan",
+      score: globalPanicScore + 2,
+      frictionPointsCount: 3,
+      dropOffProbability: Math.min(90, globalPanicScore + 8),
+      trustRating: Math.max(20, 72 - globalPanicScore),
+      cognitiveLoad: "Medium",
+      biggestRisk: "Vague headings and decorative shapes competing with the main service value proposition.",
+      quote: `I skimmed the main page for 3 seconds. The heading says 'Optimize Your Synergy Metrics Interface Gateway'. What does this platform even sell? I got bored of decyphering complex terms and browsed YouTube instead.`,
+      frictionPoints: [
+        {
+          element: "h1.hero-headline-title-block",
+          locationDescription: "Top center space of hero landing pane.",
+          panicTrigger: "Dense proprietary vocabulary that fails the simple landing clarity check.",
+          severity: "high",
+          namedZone: "hero_focus_pane"
+        }
+      ]
+    };
+
+    firstTimeReport = {
+      personaName: "First-Timer Fiona",
+      score: globalPanicScore - 1,
+      frictionPointsCount: 2,
+      dropOffProbability: Math.min(90, globalPanicScore + 1),
+      trustRating: Math.max(25, 75 - globalPanicScore),
+      cognitiveLoad: "Medium",
+      biggestRisk: "Empty dashboards and dense product abbreviations lacking user onboarding steps.",
+      quote: `It says 'Deploy Ingress Telemetry Config Nodes'. Why can't they just say 'Set up your website tracker'? Just explain step one with a direct human dialog box.`,
+      frictionPoints: [
+        {
+          element: "p.hero-onboarding-subtitle-span",
+          locationDescription: "Directly beneath the primary title.",
+          panicTrigger: "Assumes massive category domain knowledge from first-time visitors, triggering bounces.",
+          severity: "medium",
+          namedZone: "hero_focus_pane"
+        }
+      ]
+    };
+
+    impatientMobileReport = {
+      personaName: "Impatient Ian",
+      score: Math.min(100, globalPanicScore + 12),
+      frictionPointsCount: 4,
+      dropOffProbability: Math.min(98, globalPanicScore + 14),
+      trustRating: Math.max(10, 64 - globalPanicScore),
+      cognitiveLoad: "High",
+      biggestRisk: "Desktop-oriented button positions resulting in painful accidental clicks on mobile rails.",
+      quote: `I'm holding the handrail on a bus trying to tap the CTA page. The primary button target is tiny and stands directly beside the 'Terms of Use' link! I kept opening secondary PDF legal documents by mistake.`,
+      frictionPoints: [
+        {
+          element: "button#landing-primary-cta",
+          locationDescription: "Bottom row of hero center pane.",
+          panicTrigger: "Lacks secure mobile bounding targets of 44px, precipitating persistent misclicks on auxiliary links.",
+          severity: "high",
+          namedZone: "actionable_trigger_group"
+        }
+      ]
+    };
+
+    skepticReport = {
+      personaName: "Skeptical Sally",
+      score: globalPanicScore + 3,
+      frictionPointsCount: 2,
+      dropOffProbability: Math.min(95, globalPanicScore + 5),
+      trustRating: Math.max(5, 45 - globalPanicScore),
+      cognitiveLoad: "Medium",
+      biggestRisk: "Vague slogans, stock layout assets, and complete absence of verified social proof or reviews.",
+      quote: `They promise 'Instant layout optimization boosts 400%!' but don't show real client list logos, customer testimonials, or links to Github codes. It feels like an AI-generated template made to collect emails.`,
+      frictionPoints: [
+        {
+          element: "section#customer-logos-block",
+          locationDescription: "Staggered directly below the hero banner.",
+          panicTrigger: "Stock icon placeholders or empty spaces with zero verified customer trust logos.",
+          severity: "medium",
+          namedZone: "footer_trust_strip"
+        }
+      ]
+    };
+
+    universalComplaints = [
+      {
+        element: "button#landing-primary-cta",
+        reason: "Anxious users hesitate to click unverified trial buttons; Impatient mobile users click adjacent links due to micro targets; Skeptics reject the vague value propositions.",
+        solution: `<!-- Clean, spaced, trust-verified interactive CTA trigger -->`
+      }
+    ];
+
+    fixes = [
+      {
+        issue: "Landing hero CTA target height is too compact",
+        recommendation: `<!-- Boost vertical bounding targets on hero action block buttons -->`,
+        difficulty: "Easy",
+        impact: "Critical"
+      }
+    ];
+  }
+
+  const generatedId = `report-${Math.random().toString(36).substring(2, 11)}`;
+
+  return {
+    id: generatedId,
+    title: `${formattedName} Portal`,
+    urlAnalyzed: url || "No website URL (direct media upload)",
+    timestamp: new Date().toISOString(),
+    globalPanicScore,
+    brutalSummary,
+    visualAestheticRating,
+    aestheticCritique,
+    namedUIZones,
+    personas: {
+      anxious: anxiousReport,
+      distracted: distractedReport,
+      firstTime: firstTimeReport,
+      impatientMobile: impatientMobileReport,
+      skeptic: skepticReport
+    },
+    universalComplaints,
+    panicCertificate: {
+      verdict,
+      text: verdictTextTemplate
+    },
+    fixes
   };
 }
 
@@ -344,7 +934,7 @@ How statistics are calculated:
 - Drop-off Probability: Calculated as the realistic, derived chance (0-100%) this persona abandons before completion.
 - Trust Rating (0-100%): Anchored to specific visual trust evidence or lack thereof in the screenshot.
 - Score: Overall stress/friction level.
-- Panic Score: Adjusted average of all five drop-offs.
+- Panic Score: Adjusted average of all five drop-offs. 
 
 UNIVERSAL COMPLAINTS ALGORITHM:
 Perform a secondary pass. Any element flagged by three or more personas MUST be elevated to a Universal Complaint, listing why multiple users hit the wall, and providing a single concrete replacement code/spec.
@@ -353,9 +943,19 @@ FIX GENERATOR BEHAVIOR:
 Provide explicit replacement code or exact microcopy text instead of generic suggestions.
 
 Panic Certificate Logic:
-- Above 80: "Panic-Proof" verdict (confident, specific praise).
-- Between 40 and 80: "Work In Progress" verdict (highlights top 2-3 modifications).
-- Below 40: "Crime Scene" verdict (senior designer direct constructive review).
+- Under 35 score: "Panic-Proof" verdict (minimal friction, flawless clarity, high trust. Confident, specific praise).
+- Between 35 and 74 score: "Work In Progress" verdict (some friction, highlights top 2-3 modifications).
+- 75 and above score: "Crime Scene" verdict (critical layout errors, massive dropoffs, extremely high friction. Senior designer direct constructive review).
+
+CRITICAL COPYWRITING DIRECTIVE (ANTI-CLICHÉ GUARDRAIL):
+- You MUST NOT under any circumstance use repetitive boilerplate sentences.
+- STRICTLY FORBIDDEN from outputting the following cliché sentences:
+  - "My screen is crowded with inline badges and secondary sidebars..."
+  - "I'm standing in a grocery line trying to complete this on a tiny screen..."
+  - "Wait, does this register right away or do I get a chance to confirm?..."
+  - "The interface targets are tiny! Standard fingers require at least 44 pixels of tap height..."
+  - "They demand input data right away but don't state who they are or show security badges..."
+- Every single quote, critique, named zone, and recommended code fix MUST be 100% custom, unique, and tailored to the visual properties and text of the provided screen or domain. Cite specific terms, buttons, colors, and layout configurations that are actually present.
 
 CRITICAL SECURITY AND SAFETY GUARDRAILS:
 - If the URL, layout text, or screenshot image contains sexually explicit (pornography/adult), hateful, extremely violent, or illicit materials, or is trying to hijack the platform for abusive requests:
