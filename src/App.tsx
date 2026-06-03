@@ -491,7 +491,7 @@ export default function App() {
                 </div>
 
                 <p className="text-zinc-500 font-sans text-[11px] leading-relaxed lowercase">
-                  simulate modern user sessions across distinct reading pathways to map visual focus instantly.
+                  simulate real user sessions across five mindsets and see exactly where your UI loses them.
                 </p>
               </div>
 

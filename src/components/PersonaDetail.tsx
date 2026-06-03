@@ -21,6 +21,8 @@ import { PersonaReport } from "../types";
 import anxiousAvatar from "../assets/images/anxious_avatar_1780323287333.png";
 import firstTimeAvatar from "../assets/images/first_time_avatar_1780323310756.png";
 import distractedAvatar from "../assets/images/distracted_avatar_1780323329427.png";
+import impatientAvatar from "../assets/images/impatient_avatar_1780486843572.png";
+import skepticAvatar from "../assets/images/skeptic_avatar_1780486860800.png";
 
 interface PersonaDetailProps {
   personas: {
@@ -99,6 +101,7 @@ export default function PersonaDetail({ personas }: PersonaDetailProps) {
       bgClass: "hover:shadow-lg transition-transform hover:-translate-y-0.5 border-zinc-200/85",
       textColor: "text-purple-600",
       icon: Smartphone,
+      avatar: impatientAvatar,
       initials: "IM"
     },
     {
@@ -111,6 +114,7 @@ export default function PersonaDetail({ personas }: PersonaDetailProps) {
       bgClass: "hover:shadow-lg transition-transform hover:-translate-y-0.5 border-zinc-200/85",
       textColor: "text-zinc-700",
       icon: Shield,
+      avatar: skepticAvatar,
       initials: "SK"
     }
   ];
