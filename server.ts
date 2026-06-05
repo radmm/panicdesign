@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import dotenv from "dotenv";
 import { GoogleGenAI, Type } from "@google/genai";
+import { generateFallbackReport } from "./src/utils/fallbackGenerator";
 
 // Load environment variables
 dotenv.config();
@@ -76,6 +77,10 @@ function cleanUrlToName(urlStr?: string): string {
 
 // Highly detailed server-side fallback generator to prevent 503 system interruptions and peak-demand overload
 function generateServerFallbackReport(url?: string, screenshotBase64?: string): any {
+  return generateFallbackReport(url || "", undefined);
+}
+
+function legacyUnusedGenerateServerFallbackReport(url?: string, screenshotBase64?: string): any {
   const targetName = url 
     ? url.replace(/^(https?:\/\/)?(www\.)?/, "").split("/")[0].split(".")[0]
     : "Uploaded Layout";
