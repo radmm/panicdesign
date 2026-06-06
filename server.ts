@@ -3,6 +3,7 @@ import path from "path";
 import dotenv from "dotenv";
 import { GoogleGenAI, Type } from "@google/genai";
 import { generateFallbackReport } from "./src/utils/fallbackGenerator";
+import { captureUrlWithNimble } from "./src/utils/nimbleScraper";
 
 // Load environment variables
 dotenv.config();
@@ -895,24 +896,47 @@ app.post("/api/stress-test", async (req, res) => {
 
     const ai = getGenAI();
 
+    // Nimbleway Scraper Interceptor implementation
+    let activeScreenshot = screenshotBase64;
+    let activeMimeType = mimeType || "image/png";
+    let utilizedNimble = false;
+
+    if (url && !activeScreenshot) {
+      try {
+        const nimbleCapture = await captureUrlWithNimble(url);
+        if (nimbleCapture) {
+          activeScreenshot = nimbleCapture;
+          activeMimeType = "image/png";
+          utilizedNimble = true;
+          console.log(`[NIMBLEWAY SUCCESS] Real-time headless browser screenshot fetched successfully via Nimble API for URL: ${url}`);
+        }
+      } catch (err) {
+        console.error("[NIMBLEWAY ERROR IN API FLOW]", err);
+      }
+    }
+
     // Prepare content parts for Gemini
     const contents: any[] = [];
     
-    // UI screenshot part if uploaded
-    if (screenshotBase64) {
+    // UI screenshot part (either uploaded or intercepted via Nimbleway Scraper)
+    if (activeScreenshot) {
       contents.push({
         inlineData: {
-          mimeType: mimeType || "image/png",
-          data: screenshotBase64.replace(/^data:image\/\w+;base64,/, ""),
+          mimeType: activeMimeType,
+          data: activeScreenshot.replace(/^data:image\/\w+;base64,/, ""),
         },
       });
     }
 
     // Structured UX audit instructions prompt
     let promptText = `Verify, audit, and deconstruct the user experience of the provided UI `;
-    if (screenshotBase64 && url) {
-      promptText += `screenshot representing the website ${url}.`;
-    } else if (screenshotBase64) {
+    if (activeScreenshot && url) {
+      if (utilizedNimble) {
+        promptText += `screenshot of ${url} captured live in real time via our Nimble headless scraping browser pipeline.`;
+      } else {
+        promptText += `screenshot representing the website ${url}.`;
+      }
+    } else if (activeScreenshot) {
       promptText += `screenshot.`;
     } else {
       promptText += `website URL: ${url}. (Audit based on your generalized knowledge of this service's standard web layout, onboarding patterns, text fields, and CTAs).`;
