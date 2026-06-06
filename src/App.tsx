@@ -636,7 +636,8 @@ export default function App() {
       {/* Elegant, high-contrast, minimalist responsive Footer */}
       <footer className="py-8 mt-12 border-t border-zinc-200/45">
         <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 font-mono text-[9px] text-zinc-400">
-          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 lowercase tracking-wide text-zinc-400">
+          <div className="flex flex-col items-center sm:items-start gap-1 lowercase tracking-wide text-zinc-400">
+            <span className="text-[8px] text-zinc-500 font-mono tracking-wider">powered by nimbleaway scraper agent</span>
             <span>made with &lt;3 by dev vishwas</span>
           </div>
           <p className="font-sans font-normal text-zinc-400">
