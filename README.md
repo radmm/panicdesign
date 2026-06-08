@@ -1,20 +1,27 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# panic.design
+https://youtu.be/SI_EZdM8ptI
 
-# Run and deploy your AI Studio app
+Drop any UI screenshot or live URL. See exactly where 5 real user types freeze, rage-click, or leave before your real users do.
 
-This contains everything you need to run your app locally.
+## What it does
+panic.design runs your interface through five distinct user personas and returns a Panic Score - a brutally honest breakdown of every friction point, drop-off risk, and trust failure in your UI.
 
-View your app in AI Studio: https://ai.studio/apps/ffab2942-acb7-4ed7-b813-b3b897468fc6
+## Personas
+- The Anxious User
+- The Distracted User
+- The First-Timer
+- The Impatient Mobile User
+- The Skeptic
 
-## Run Locally
+## Features
+- Screenshot upload or live URL analysis
+- Panic Score (0-100) across five tiers
+- First-person persona voice feedback
+- Fix Generator with actual rewrites
+- Before/After comparison mode
 
-**Prerequisites:**  Node.js
+## Built With
+Gemini Vision API, Nimble Web Rendering API, JavaScript, HTML, CSS, Vercel
 
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Live Demo
+[panicdesign.vercel.app](https://panicdesign.vercel.app)
